@@ -1,0 +1,127 @@
+---
+title: "High Performance Computing"
+output:
+  html_document:
+    theme: flatly
+    highlight: tango
+---
+
+## First step: get an account
+
+USC's High-performance-computing center (HPCC) offers accounts free of charge to
+all members of the community. The application process is only and simple, you
+just need to provide information about you, what are your plans for using HPC
+and some idea of how much space you are planning to use (which can be very
+generous).
+
+To apply for a new account, you can follow the instructions
+[here](https://hpcc.usc.edu/support/accounts/applying-for-a-hpcc-account/).
+Once you get your account approved, you can contact us to request access
+to Biostats' shared space (we have a ton).
+
+Some important points to consider while using HPC in R
+
+## Keep yor library organized
+
+In a lot of setups the "Desk" space available (a.k.a. home) in HPC clusters is
+rather small. In such cases it makes sense to keep permanent files elsewhere.
+This applies directly to the R library (where R packages live).
+
+**The simple tip is** Keep all your good stuff in a folder where you have a large
+storage (rather permanent) space, and create a symbolic link to it at home. Here
+is an example setup:
+
+```shell
+$ cd /where/i/have/space/
+$ mkdir Rlibs
+$ cd ~
+$ ln -s R /where/i/have/space/Rlibs
+```
+
+This way, whenever you install an R package, by default it will be installed
+in your `/where/i/have/space/Rlibs` folder, but it is easy to access from any
+R session sin R will check (by default) your home directory for an `R` folder.
+
+In the particular case of USC, home directories (not to be confounded with
+project directories) are rather small, 1GB last time I checked, which makes 
+sense as you shouldn't be using the home directory for storage but for script
+submission.
+
+## Don't hijack nodes
+
+A lot of times people tend to request resources by the node, which is a terrible
+(not very nice) practice. Instead of specifying how many nodes you want to use,
+tell the job-scheduler how many tasks (or cores) you request.
+
+In the case of Slurm, we can use the following setup:
+
+```shell
+#SBATCH ntasks=1
+#SBATCH cpus-per-task=10
+```
+
+The previous code is advising[^advice] Slurm to allocate 10 cores for the job
+to be submitted. Another way to be more efficient is using Arrays, e.g.
+
+[^advice]: In Slurm, setting the number of cores or memory required for a particular
+job is actually an advice since the job-scheduler will try to allocate your job
+in a set of nodes (or single node) that hopefully goes along with the requirement.
+There are ways to be more strict about some of these, but is not recomended to
+follow that path.
+
+```shell
+#SBATCH array=1-10
+#SBATCH ntasks=1
+#SBATCH cpus-per-task=4
+```
+
+This code tells Slurm that this job should be repeated 10 times with the same
+setup (10 jobs each with a single task, but each task using 4 processors, i.e.
+40 cores). The key is in the environment variable `SLURM_ARRAY_TASK_ID` which
+will take values 1 through 10 at each job, so the user can specify what to do
+in each one of the jobs, for example, in R:
+
+```R
+ARRAY_ID <- Sys.getenv("SLURM_ARRAY_TASK_ID")
+dat <- readRDS(sprintf("path/to/a/file/file-number-%d.rds", ARRAY_ID))
+```
+
+## Keep tempfiles where they belong
+
+TL;DR use the stagging or tmp filesystems in your cluster to store temporal
+files. Only files that will be used for analysis (results) should be stored
+in project space.
+
+This means that any by-product like log files, auxiliar files, etc. should be
+kept in those places
+
+## Use links and not hard copies of large data
+
+A very common and bad practice is to keep copies of large files duplicated accross
+projects. A good practice is to have symbolic links to whatever large data set
+you are planning to use instead. For example, suppose that we have the following
+file
+
+```shell
+/path/to/a/very/large/big-dataset.csv
+```
+
+Instead of creating a copy in your project directory, you should consider doing
+the following instead:
+
+```shell
+$ mkdir data-raw
+$ cd data-raw
+$ ln -s big-dataset.csv /path/to/a/very/large/big-dataset.csv
+```
+
+System managers (and your future self), will appreciate it.
+
+## Be mindful about special configs for R packages
+
+Some times R packages installed from source have flags that can cause your code
+to blow in a HPC cluster setting. One recent example of this is the R package 
+`rstan`. In this case, some flags passed to the compiler made the package to
+fine-tune the compilation to the current machine, which causes problems when
+your cluster is actually heterogenous in terms of nodes setup.
+

@@ -1,0 +1,7 @@
+---
+title: "Happy Scientist Talks"
+output:
+  html_document:
+    theme: flatly
+    highlight: tango
+---

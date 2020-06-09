@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Parallel computing</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  background-color: #f8f8f8; }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #c4a000; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #000000; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #000000; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #000000; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h2 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h3 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h4 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h5 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h6 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">USC Software Dev</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Handbook
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="handbook-01-standards.html">Standards</a>
+    </li>
+    <li>
+      <a href="handbook-02-r_package.html">R packages</a>
+    </li>
+    <li>
+      <a href="handbook-03-parallel.html">Parallel</a>
+    </li>
+    <li>
+      <a href="handbook-04-testing.html">Testing</a>
+    </li>
+    <li>
+      <a href="handbook-05-profiling.html">Profiling</a>
+    </li>
+    <li>
+      <a href="handbook-06-hpc.html">High Performance Computing</a>
+    </li>
+    <li>
+      <a href="handbook-07-slow-patterns.html">Slow R patterns</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="bioghost-server.html">Bioghost Server</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Parallel computing</h1>
+
+</div>
+
+
+<p>Before starting, be advice that this chapter is in continuous work-in-progress mode, which translates in potential changes in the ordering of the sections, availability of contents, etc.</p>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>In this chapter we will introduce the reader to parallel computing using R. In particular, we will take a general overview on what is parallel computing, how can it benefit us, and how can it be used in R.</p>
+<p>The rest of this chapter develops under the assumption that the reader has some level of knowledge about R fundamentals (types of objects, functions, etc.).</p>
+</div>
+<div id="what-is-parallel-computing-anyway" class="section level2">
+<h2>What is parallel computing, anyway?</h2>
+<p>In very simple terms, parallel computing is all about making things run faster. More concrete, while there are plenty ways of accelerating calculations, parallel computing is all about doing multiple things simultaneously.</p>
+<p>Sequential computing, on the other hand, is what we usually see in R. When we make a call to a function, most of the time R is doing calculations using a single processor. While this may not be a problem if your call takes just a couple of seconds, it may be critical if, for example, the program needs to make a significant number of such calls, say 1,000, in order to be completed.</p>
+<p>While not a general rule, most of the time computationally intensive programs can be split in such a way that its components can be executed in a isolated way, this is, without relying in the other parts to be completed.</p>
+<p>For example, suppose that you have a function that takes a number and multiplies it by 2, let’s call it <code>f</code>:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>f &lt;-<span class="st"> </span><span class="cf">function</span>(n) n<span class="op">*</span><span class="dv">2</span></span></code></pre></div>
+<p>In R, this simple function can be applied seamlessly to a vector, for example:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>x &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">4</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="kw">f</span>(x)</span></code></pre></div>
+<pre><code>## [1] 2 4 6 8</code></pre>
+<p>If we were able to see how calculations are taking place in R, we could represent this in the following way:</p>
+<div class="figure">
+<img src="figure/pll-computing-explained-serial.png" width="600" alt="" />
+<p class="caption">Here we are using a single core. The function is applied one element at a time, leaving the other 3 cores without usage.</p>
+</div>
+<p>Now, in a parallel computing setting, the same function can be applied simultaneously to multiple elements of <code>x</code>, as in the following figure, where the number of cores matches the number of elements/tasks that need to be processed:</p>
+<div class="figure">
+<img src="figure/pll-computing-explained-parallel.png" width="600" alt="" />
+<p class="caption">In this more intelligent way of computation, we are taking full advantage of our computer by using all 4 cores at the same time. This will translate in a reduced computation time which, in the case of complicated/long calculations, can be an important speed gain.</p>
+</div>
+<p>In principle, this implementation of the function <code>f</code> should take 1/4 of what the original version takes to be applied to <code>x</code>. As the number of function calls increases, or in other words, as the complexity in terms of computational time increases, it makes sense to start thinking about parallel computing. This takes us to the next section.</p>
+</div>
+<div id="when-is-it-a-good-idea" class="section level2">
+<h2>When is it a good idea?</h2>
+<p>Parallel computing sounds great, but is it always a good idea to try to <strong>parallelize</strong> your program? The answer is no.</p>
+<p>A lot of times we feel pushed towards writing the code as efficient as possible. Moreover, this is a known problem among software developers, see for example this hilarious reply on <a href="https://www.stackoverflow.com">Stackoverflow</a> regarding “bets comment in source code”<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>:</p>
+<pre><code>// 
+// Dear maintainer:
+// 
+// Once you are done trying to &#39;optimize&#39; this routine,
+// and have realized what a terrible mistake that was,
+// please increment the following counter as a warning
+// to the next guy:
+// 
+// total_hours_wasted_here = 42
+// </code></pre>
+<p>While optimizing a program may be important in some cases, time constraints and readability may be more important in relative terms. As a rule of thumb, you will only want to optimize your code if by doing so the potential speed gains are worthwhile, for example, reducing computation speed to half of the original time in a algorithm that takes more than just a few seconds. Other examples include:</p>
+<p>Good idea when:</p>
+<ul>
+<li><p>You are writing a log-likelihood Function that you need to maximize. Solvers take, for example, at least 5 calls to the objective function so it makes sense to speed up the call.</p></li>
+<li><p>Even more relevant than a simple optimization, if the function needs to be called thousands of times like in a MCMC algorithm, then it definitely makes sense to improve speed.</p></li>
+<li><p>You are processing chunks of data in which each requires a significant amount of time to be processed.</p></li>
+</ul>
+<p>Bad idea when:</p>
+<ul>
+<li><p>The section of the program that you want to speed up already takes a relatively small time to be completed, for example, a few seconds or a fraction of a second.</p></li>
+<li><p>The section of the program you are trying to optimize is not the the actual bottle neck of the program<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a></p></li>
+</ul>
+<p>If your computational problem is reasonable enough to think about code optimization, and furthermore, implementing parallel computing, then the following diagram should be a useful guide to follow:</p>
+<div class="figure">
+<img src="figure/when_to_parallel.png" alt="" />
+<p class="caption">Ask yourself these questions before jumping into HPC!</p>
+</div>
+<p>If your problem reached the part in which it can be parallelized but there are no tools around for you to use, keep reading, otherwise move to the next chapter and don’t come back until you have a problem worthy enough to be dealt with parallel computing… just kidding.</p>
+</div>
+<div id="fundamentals" class="section level2">
+<h2>Fundamentals</h2>
+<p>Before jumping into HPC with R, let’s take a look at some concepts that are fundamental for the rest of the chapter.</p>
+<div id="types-of-parallelisms" class="section level3">
+<h3>Types of parallelisms</h3>
+<p>A nice way to look at types of computation is through Flynn’s taxonomy:</p>
+<div class="figure">
+<img src="figure/flynnsTaxonomy.png" alt="" />
+<p class="caption">Flynn’s Classical Taxonomy. Source: Introduction to Parallel Computing, Blaise Barney, Lawrence Livermore National Laboratory <a href="https://computing.llnl.gov/tutorials/parallel_comp/#Whatis">(website)</a></p>
+</div>
+</div>
+<div id="what-you-need-to-know-about-hardware" class="section level3">
+<h3>What you need to know about Hardware</h3>
+<p>One important thing to know is how many resources we have, and resources can be very different across systems. In general, we can talk about a computer’s processing unit, CPU, as a collection of cores which are grouped/arranged in sockets. More over, modern CPUs such as those built by intel have what they call multithreaded technology, which in raw terms means a single physical core behaving as multiple ones. The following figure shows a nice illustration of this:</p>
+<div class="figure">
+<img src="figure/cpu-slurm.png" alt="" />
+<p class="caption">Taxonomy of CPUs (Downloaded from de <a href="https://slurm.schedmd.com/mc_support.html" class="uri">https://slurm.schedmd.com/mc_support.html</a>)</p>
+</div>
+<p>Now, how many cores does your computer has, the parallel package can tell you that:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>parallel<span class="op">::</span><span class="kw">detectCores</span>()</span></code></pre></div>
+<pre><code>## [1] 12</code></pre>
+</div>
+<div id="hpc-in-r" class="section level3">
+<h3>HPC in R</h3>
+<p>Loosely, from R’s perspective, we can think of HPC in terms of two, maybe three things:</p>
+<ol style="list-style-type: decimal">
+<li><p>Big data: How to work with data that doesn’t fit your computer</p></li>
+<li><p>Parallel computing: How to take advantage of multiple core systems</p></li>
+<li><p>Compiled code: Write your own low-level code (if R doesn’t has it yet…)</p></li>
+</ol>
+<p>In the case of Big Data, some solutions include:</p>
+<ul>
+<li><p>Buy a bigger computer/RAM memory (not the best solution!)</p></li>
+<li><p>Use out-of-memory storage, i.e., don’t load all your data in the RAM. e.g. The <a href="https://CRAN.R-project.org/package=bigmemory">bigmemory</a>, <a href="https://CRAN.R-project.org/package=data.table">data.table</a>, <a href="https://CRAN.R-project.org/package=HadoopStreaming">HadoopStreaming</a> R packages</p></li>
+<li><p>Store it more efficiently, e.g.: Sparse Matrices (take a look at the <code>dgCMatrix</code> objects from the <a href="https://CRAN.R-project.org/package=Matrix">Matrix</a> R package)</p></li>
+</ul>
+</div>
+</div>
+<div id="parallel-computing-in-r" class="section level2">
+<h2>Parallel computing in R</h2>
+<p>As mentioned earlier, R was not designed to work with parallel computing out-of-the-box. While there are some ways to go around this such as:</p>
+<ul>
+<li><p>Obtaining the R version owned by Microsoft (<a href="https://mran.microsoft.com/">Microsoft R Open</a>), which has some features, and in particular, linear algebra routines compiled in parallel;</p></li>
+<li><p>Compiling R with BLAS allowing for parallel computing (a couple of examples <a href="https://www.r-bloggers.com/why-is-r-slow-some-explanations-and-mklopenblas-setup-to-try-to-fix-this/">here</a> and <a href="https://www.r-bloggers.com/compile-r-and-openblas-from-source-guide/">here</a>);</p></li>
+<li><p>Getting the opensource version pqR (<a href="http://www.pqr-project.org/">pretty quick R</a>, which at the writing of this has a stable release published on February 19th, 2019);</p></li>
+</ul>
+<p>When it comes to use “normal” R, there are several alternatives (just take a look at the <a href="https://cran.r-project.org/web/views/HighPerformanceComputing.html">High-Performance Computing Task View</a>). Here we will focus on the following R-packages/tools for explicit parallelism:</p>
+<ol style="list-style-type: decimal">
+<li><p><strong>parallel</strong>: R package that provides ‘[s]upport for parallel computation, including random-number generation’.</p></li>
+<li><p>RcppArmadillo + OpenMP</p>
+<ul>
+<li><p><strong>RcppArmadillo</strong>: ‘Armadillo is a C++ linear algebra library, aiming towards a good balance between speed and ease of use.’ ‘[RcppArmadillo] brings the power of Armadillo to R.’</p></li>
+<li><p><strong>OpenMP</strong>: ‘Open Multi-Processing is an application programming interface (API) that supports multi-platform shared memory multiprocessing programming in C, C++, and Fortran, on most platforms, processor architectures and operating systems, including Solaris, AIX, HP-UX, Linux, macOS, and Windows.’ (<a href="https://en.wikipedia.org/wiki/OpenMP">Wiki</a>)</p></li>
+</ul></li>
+</ol>
+<p>Implicit parallelism, on the other hand, are out-of-the-box tools that allow the programmer not to worry about parallelization, e.g. such as <a href="https://cran.r-project.org/package=gpuR"><strong>gpuR</strong></a> for Matrix manipulation using GPU.</p>
+<div id="the-parallel-package" class="section level3">
+<h3>The parallel package</h3>
+<ol style="list-style-type: decimal">
+<li><p>Create a cluster:</p>
+<ol style="list-style-type: lower-alpha">
+<li><p>PSOCK Cluster: <code>makePSOCKCluster</code>: Creates brand new R Sessions (so nothing is inherited from the master), even in other computers!</p></li>
+<li><p>Fork Cluster: <code>makeForkCluster</code>: Using OS <a href="https://en.wikipedia.org/wiki/Fork_(system_call)">Forking</a>, copies the current R session locally (so everything is inherited from the master up to that point). Not available on Windows.</p></li>
+<li><p>Other: <code>makeCluster</code> passed to <strong>snow</strong></p></li>
+</ol></li>
+<li><p>Copy/prepare each R session:</p>
+<ol style="list-style-type: lower-alpha">
+<li><p>Copy objects with <code>clusterExport</code></p></li>
+<li><p>Pass expressions with <code>clusterEvalQ</code></p></li>
+<li><p>Set a seed</p></li>
+</ol></li>
+<li><p>Do your call:</p>
+<ol style="list-style-type: lower-alpha">
+<li><p><code>mclapply</code>, <code>mcmapply</code> if you are using <strong>Fork</strong></p></li>
+<li><p><code>parApply</code>, <code>parLapply</code>, etc. if you are using <strong>PSOCK</strong></p></li>
+</ol></li>
+<li><p>Stop the cluster with <code>clusterStop</code></p></li>
+</ol>
+</div>
+<div id="parallel-example-1-parallel-rng" class="section level3">
+<h3>parallel example 1: Parallel RNG</h3>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="co"># 1. CREATING A CLUSTER</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="kw">library</span>(parallel)</span>
+<span id="cb7-3"><a href="#cb7-3"></a>cl &lt;-<span class="st"> </span><span class="kw">makePSOCKcluster</span>(<span class="dv">2</span>)    </span>
+<span id="cb7-4"><a href="#cb7-4"></a></span>
+<span id="cb7-5"><a href="#cb7-5"></a><span class="co"># 2. PREPARING THE CLUSTER</span></span>
+<span id="cb7-6"><a href="#cb7-6"></a><span class="kw">clusterSetRNGStream</span>(cl, <span class="dv">123</span>) <span class="co"># Equivalent to `set.seed(123)`</span></span>
+<span id="cb7-7"><a href="#cb7-7"></a></span>
+<span id="cb7-8"><a href="#cb7-8"></a><span class="co"># 3. DO YOUR CALL</span></span>
+<span id="cb7-9"><a href="#cb7-9"></a>ans &lt;-<span class="st"> </span><span class="kw">parSapply</span>(cl, <span class="dv">1</span><span class="op">:</span><span class="dv">2</span>, <span class="cf">function</span>(x) <span class="kw">runif</span>(<span class="fl">1e3</span>))</span>
+<span id="cb7-10"><a href="#cb7-10"></a>(ans0 &lt;-<span class="st"> </span><span class="kw">var</span>(ans))</span></code></pre></div>
+<pre><code>#               [,1]          [,2]
+# [1,]  0.0861888293 -0.0001633431
+# [2,] -0.0001633431  0.0853841838</code></pre>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="co"># I want to get the same!</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a><span class="kw">clusterSetRNGStream</span>(cl, <span class="dv">123</span>)</span>
+<span id="cb9-3"><a href="#cb9-3"></a>ans1 &lt;-<span class="st"> </span><span class="kw">var</span>(<span class="kw">parSapply</span>(cl, <span class="dv">1</span><span class="op">:</span><span class="dv">2</span>, <span class="cf">function</span>(x) <span class="kw">runif</span>(<span class="fl">1e3</span>)))</span>
+<span id="cb9-4"><a href="#cb9-4"></a></span>
+<span id="cb9-5"><a href="#cb9-5"></a>ans0 <span class="op">-</span><span class="st"> </span>ans1 <span class="co"># A matrix of zeros</span></span></code></pre></div>
+<pre><code>#      [,1] [,2]
+# [1,]    0    0
+# [2,]    0    0</code></pre>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="co"># 4. STOP THE CLUSTER</span></span>
+<span id="cb11-2"><a href="#cb11-2"></a><span class="kw">stopCluster</span>(cl)</span></code></pre></div>
+<p>In the case of <code>makeForkCluster</code></p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="co"># 1. CREATING A CLUSTER</span></span>
+<span id="cb12-2"><a href="#cb12-2"></a><span class="kw">library</span>(parallel)</span>
+<span id="cb12-3"><a href="#cb12-3"></a></span>
+<span id="cb12-4"><a href="#cb12-4"></a><span class="co"># The fork cluster will copy the -nsims- object</span></span>
+<span id="cb12-5"><a href="#cb12-5"></a>nsims &lt;-<span class="st"> </span><span class="fl">1e3</span></span>
+<span id="cb12-6"><a href="#cb12-6"></a>cl    &lt;-<span class="st"> </span><span class="kw">makeForkCluster</span>(<span class="dv">2</span>)    </span>
+<span id="cb12-7"><a href="#cb12-7"></a></span>
+<span id="cb12-8"><a href="#cb12-8"></a><span class="co"># 2. PREPARING THE CLUSTER</span></span>
+<span id="cb12-9"><a href="#cb12-9"></a><span class="kw">RNGkind</span>(<span class="st">&quot;L&#39;Ecuyer-CMRG&quot;</span>)</span>
+<span id="cb12-10"><a href="#cb12-10"></a><span class="kw">set.seed</span>(<span class="dv">123</span>) </span>
+<span id="cb12-11"><a href="#cb12-11"></a></span>
+<span id="cb12-12"><a href="#cb12-12"></a><span class="co"># 3. DO YOUR CALL</span></span>
+<span id="cb12-13"><a href="#cb12-13"></a>ans &lt;-<span class="st"> </span><span class="kw">do.call</span>(cbind, <span class="kw">mclapply</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>, <span class="cf">function</span>(x) {</span>
+<span id="cb12-14"><a href="#cb12-14"></a>  <span class="kw">runif</span>(nsims) <span class="co"># Look! we use the nsims object!</span></span>
+<span id="cb12-15"><a href="#cb12-15"></a>               <span class="co"># This would have fail in makePSOCKCluster</span></span>
+<span id="cb12-16"><a href="#cb12-16"></a>               <span class="co"># if we didn&#39;t copy -nsims- first.</span></span>
+<span id="cb12-17"><a href="#cb12-17"></a>  }))</span>
+<span id="cb12-18"><a href="#cb12-18"></a>(ans0 &lt;-<span class="st"> </span><span class="kw">var</span>(ans))</span></code></pre></div>
+<pre><code>#            [,1]       [,2]
+# [1,] 0.08538418 0.00239079
+# [2,] 0.00239079 0.08114219</code></pre>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="co"># Same sequence with same seed</span></span>
+<span id="cb14-2"><a href="#cb14-2"></a><span class="kw">set.seed</span>(<span class="dv">123</span>) </span>
+<span id="cb14-3"><a href="#cb14-3"></a>ans1 &lt;-<span class="st"> </span><span class="kw">var</span>(<span class="kw">do.call</span>(cbind, <span class="kw">mclapply</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>, <span class="cf">function</span>(x) <span class="kw">runif</span>(nsims))))</span>
+<span id="cb14-4"><a href="#cb14-4"></a></span>
+<span id="cb14-5"><a href="#cb14-5"></a>ans0 <span class="op">-</span><span class="st"> </span>ans1 <span class="co"># A matrix of zeros</span></span></code></pre></div>
+<pre><code>#      [,1] [,2]
+# [1,]    0    0
+# [2,]    0    0</code></pre>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="co"># 4. STOP THE CLUSTER</span></span>
+<span id="cb16-2"><a href="#cb16-2"></a><span class="kw">stopCluster</span>(cl)</span></code></pre></div>
+</div>
+</div>
+<div id="parallel-example-2-simulating-pi" class="section level2">
+<h2>parallel example 2: Simulating <span class="math inline">\(\pi\)</span></h2>
+<ul>
+<li><p>We know that <span class="math inline">\(\pi = \frac{A}{r^2}\)</span>. We approximate it by randomly adding points <span class="math inline">\(x\)</span> to a square of size 2 centered at the origin.</p></li>
+<li><p>So, we approximate <span class="math inline">\(\pi\)</span> as <span class="math inline">\(\Pr\{\|x\| \leq 1\}\times 2^2\)</span></p></li>
+</ul>
+<p>The R code to do this</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>pisim &lt;-<span class="st"> </span><span class="cf">function</span>(i, nsim) {  <span class="co"># Notice we don&#39;t use the -i-</span></span>
+<span id="cb17-2"><a href="#cb17-2"></a>  <span class="co"># Random points</span></span>
+<span id="cb17-3"><a href="#cb17-3"></a>  ans  &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">runif</span>(nsim<span class="op">*</span><span class="dv">2</span>), <span class="dt">ncol=</span><span class="dv">2</span>)</span>
+<span id="cb17-4"><a href="#cb17-4"></a>  </span>
+<span id="cb17-5"><a href="#cb17-5"></a>  <span class="co"># Distance to the origin</span></span>
+<span id="cb17-6"><a href="#cb17-6"></a>  ans  &lt;-<span class="st"> </span><span class="kw">sqrt</span>(<span class="kw">rowSums</span>(ans<span class="op">^</span><span class="dv">2</span>))</span>
+<span id="cb17-7"><a href="#cb17-7"></a>  </span>
+<span id="cb17-8"><a href="#cb17-8"></a>  <span class="co"># Estimated pi</span></span>
+<span id="cb17-9"><a href="#cb17-9"></a>  (<span class="kw">sum</span>(ans <span class="op">&lt;=</span><span class="st"> </span><span class="dv">1</span>)<span class="op">*</span><span class="dv">4</span>)<span class="op">/</span>nsim</span>
+<span id="cb17-10"><a href="#cb17-10"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="co"># Setup</span></span>
+<span id="cb18-2"><a href="#cb18-2"></a>cl &lt;-<span class="st"> </span><span class="kw">makePSOCKcluster</span>(<span class="dv">10</span>)</span>
+<span id="cb18-3"><a href="#cb18-3"></a><span class="kw">clusterSetRNGStream</span>(cl, <span class="dv">123</span>)</span>
+<span id="cb18-4"><a href="#cb18-4"></a></span>
+<span id="cb18-5"><a href="#cb18-5"></a><span class="co"># Number of simulations we want each time to run</span></span>
+<span id="cb18-6"><a href="#cb18-6"></a>nsim &lt;-<span class="st"> </span><span class="fl">1e5</span></span>
+<span id="cb18-7"><a href="#cb18-7"></a></span>
+<span id="cb18-8"><a href="#cb18-8"></a><span class="co"># We need to make -nsim- and -pisim- available to the</span></span>
+<span id="cb18-9"><a href="#cb18-9"></a><span class="co"># cluster</span></span>
+<span id="cb18-10"><a href="#cb18-10"></a><span class="kw">clusterExport</span>(cl, <span class="kw">c</span>(<span class="st">&quot;nsim&quot;</span>, <span class="st">&quot;pisim&quot;</span>))</span>
+<span id="cb18-11"><a href="#cb18-11"></a></span>
+<span id="cb18-12"><a href="#cb18-12"></a><span class="co"># Benchmarking: parSapply and sapply will run this simulation</span></span>
+<span id="cb18-13"><a href="#cb18-13"></a><span class="co"># a hundred times each, so at the end we have 1e5*100 points</span></span>
+<span id="cb18-14"><a href="#cb18-14"></a><span class="co"># to approximate pi</span></span>
+<span id="cb18-15"><a href="#cb18-15"></a>rbenchmark<span class="op">::</span><span class="kw">benchmark</span>(</span>
+<span id="cb18-16"><a href="#cb18-16"></a>  <span class="dt">parallel =</span> <span class="kw">parSapply</span>(cl, <span class="dv">1</span><span class="op">:</span><span class="dv">100</span>, pisim, <span class="dt">nsim=</span>nsim),</span>
+<span id="cb18-17"><a href="#cb18-17"></a>  <span class="dt">serial   =</span> <span class="kw">sapply</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>, pisim, <span class="dt">nsim=</span>nsim), <span class="dt">replications =</span> <span class="dv">1</span></span>
+<span id="cb18-18"><a href="#cb18-18"></a>)[,<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>]</span></code></pre></div>
+<pre><code>#       test replications elapsed relative
+# 1 parallel            1   0.302    1.000
+# 2   serial            1   1.556    5.152</code></pre>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a>ans_par &lt;-<span class="st"> </span><span class="kw">parSapply</span>(cl, <span class="dv">1</span><span class="op">:</span><span class="dv">100</span>, pisim, <span class="dt">nsim=</span>nsim)</span>
+<span id="cb20-2"><a href="#cb20-2"></a>ans_ser &lt;-<span class="st"> </span><span class="kw">sapply</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>, pisim, <span class="dt">nsim=</span>nsim)</span>
+<span id="cb20-3"><a href="#cb20-3"></a><span class="kw">stopCluster</span>(cl)</span></code></pre></div>
+<pre><code>#      par      ser        R 
+# 3.141561 3.141247 3.141593</code></pre>
+<div id="speedup-things-with-rcpp-openmp" class="section level3">
+<h3>Speedup things with Rcpp + OpenMP</h3>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Read the original post (now closed) <a href="https://stackoverflow.com/questions/184618/what-is-the-best-comment-in-source-code-you-have-ever-encountered">here</a>.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>For more about how to identify code bottlenecks, take a look at the Profiling section of this book <a href="#profile-benchmark">here</a>.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

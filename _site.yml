@@ -1,0 +1,25 @@
+name: "my-website"
+output_dir: "docs"
+navbar:
+  title: "USC Software Dev"
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "Handbook"
+      menu:
+        - text: "Standards"
+          href: handbook-01-standards.html
+        - text: "R packages"
+          href: handbook-02-r_package.html
+        - text: "Parallel"
+          href: handbook-03-parallel.html
+        - text: "Testing"
+          href: handbook-04-testing.html
+        - text: "Profiling"
+          href: handbook-05-profiling.html
+        - text: "High Performance Computing"
+          href: handbook-06-hpc.html
+        - text: "Slow R patterns"
+          href: handbook-07-slow-patterns.html
+    - text: "Bioghost Server"
+      href: bioghost-server.html

@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>bioghost-server.utf8</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  background-color: #f8f8f8; }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #c4a000; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #000000; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #000000; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #000000; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h2 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h3 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h4 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h5 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h6 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">USC Software Dev</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Handbook
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="handbook-01-standards.html">Standards</a>
+    </li>
+    <li>
+      <a href="handbook-02-r_package.html">R packages</a>
+    </li>
+    <li>
+      <a href="handbook-03-parallel.html">Parallel</a>
+    </li>
+    <li>
+      <a href="handbook-04-testing.html">Testing</a>
+    </li>
+    <li>
+      <a href="handbook-05-profiling.html">Profiling</a>
+    </li>
+    <li>
+      <a href="handbook-06-hpc.html">High Performance Computing</a>
+    </li>
+    <li>
+      <a href="handbook-07-slow-patterns.html">Slow R patterns</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="bioghost-server.html">Bioghost Server</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+
+</div>
+
+
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>This document describes the current configuration of the bioghost.usc.edu server. Be advised that this document is permanently work-in-progress.</p>
+</div>
+<div id="setup" class="section level1">
+<h1>Setup</h1>
+<p>The following instructions have been written for a server running <a href="https://wiki.centos.org/Manuals/ReleaseNotes/CentOS7"><strong>CentOS Linux release 7.3.1611 (Core)</strong></a> that has been registered to have an static IP/www address (see <a href="https://itservices.usc.edu/registration/">here</a>).</p>
+<div id="security" class="section level2">
+<h2>Security</h2>
+<!--
+
+### SSH Access
+
+1.  In the file `/etc/ssh/sshd_config` set the options Port and `PermitRootLogin`
+    to "2436" and "no" respectively as follows
+    
+    ```shell
+    Port 22
+    ...
+    PermitRootLogin no
+    ```
+
+2.  Once you have change that, restart the ssh service as follows
+    
+    ```shell
+    sudo service ssh restart
+    ```
+    
+    You will be kicked out of the server (since originally you connected to it)
+    using the port 22. Now connect again using port 2436 instead.
+
+
+-->
+</div>
+<div id="software" class="section level2">
+<h2>Software</h2>
+<div id="valgrind" class="section level3">
+<h3>valgrind</h3>
+<p><strong>What is it?</strong></p>
+<blockquote>
+<p>Valgrind is an instrumentation framework for building dynamic analysis tools. There are Valgrind tools that can automatically detect many memory management and threading bugs, and profile your programs in detail. (valgrind.org)</p>
+</blockquote>
+<p>We use it mostly to check memory leaks in R packages when running <code>R CMD check --use-valgrind</code></p>
+<p><strong>How to install it</strong></p>
+<pre class="shell"><code>$ sudo yum install valgrind</code></pre>
+</div>
+<div id="wget" class="section level3">
+<h3>wget</h3>
+<p><strong>What is it?</strong></p>
+<blockquote>
+<p>GNU Wget is a free software package for retrieving files using HTTP, HTTPS and FTP, the most widely-used Internet protocols. It is a non-interactive commandline tool, so it may easily be called from scripts, cron jobs, terminals without X-Windows support, etc. (<a href="https://www.gnu.org/software/wget/">GNU Operating System</a>)</p>
+</blockquote>
+<p><strong>How to install it</strong></p>
+<pre class="shell"><code>$ sudo yum install wget</code></pre>
+</div>
+<div id="perl" class="section level3">
+<h3>Perl</h3>
+<p><strong>What is it?</strong></p>
+<blockquote>
+<p>Perl is a family of high-level, general-purpose, interpreted, dynamic programming languages. The languages in this family include Perl 5 and Perl 6. (<a href="https://en.wikipedia.org/wiki/Perl">wiki</a>)</p>
+</blockquote>
+<p><strong>How to install it</strong></p>
+<p>For now, we use perl to install texlive</p>
+<pre class="shell"><code>$ sudo yum install perl perl-Digest-MD5</code></pre>
+</div>
+<div id="texlive-2016" class="section level3">
+<h3>TexLive 2016</h3>
+<p><strong>What is it?</strong></p>
+<blockquote>
+<p>TeX Live is a free software distribution for the TeX typesetting system that includes major TeX-related programs, macro packages, and fonts. (<a href="https://en.wikipedia.org/wiki/TeX_Live">wiki</a>)</p>
+</blockquote>
+<p><strong>How to install it</strong></p>
+<ol style="list-style-type: decimal">
+<li><p>Download and execute the installer as follows:</p>
+<pre class="shell"><code>$ wget http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz
+$ tar xzf install-tl-unx.tar.gz
+$ cd ./install-tl-20170209/
+$ sudo perl install-tl</code></pre></li>
+<li><p>Setup process, make sure you activate the option “create symlinks to standard directories”. This will make available <code>pdflatex</code> and friends system wide.</p></li>
+</ol>
+</div>
+<div id="pandoc" class="section level3">
+<h3>Pandoc</h3>
+<p><strong>What is it?</strong></p>
+<blockquote>
+<p>Pandoc is a free and open-source software document converter, widely used as a writing tool (especially by scholars) and as a basis for publishing workflows. It was originally created by John MacFarlane, a philosophy professor at the University of California, Berkeley. (<a href="https://en.wikipedia.org/wiki/Pandoc">wiki</a>)</p>
+</blockquote>
+<p><strong>How to install it</strong></p>
+<p>Not right now, we just use the RStudio default</p>
+<!--
+Can be downloaded directly from the development website https://github.com/jgm/pandoc/releases/. The current version is Pandoc 1.17.2
+    
+1.  Download and install Pandoc 1.17.2 as follows
+
+    ```shell
+    wget https://github.com/jgm/pandoc/releases/download/1.17.2/pandoc-1.17.2-1-amd64.deb
+    sudo dpkg -i pandoc-1.17.2-1-amd64.deb
+    ```
+-->
+</div>
+<div id="mlocate" class="section level3">
+<h3>mlocate</h3>
+<p><strong>What is it?</strong></p>
+<p><strong>How to install it</strong></p>
+<pre class="shell"><code>$ sudo yum install mlocate</code></pre>
+</div>
+<div id="qpdf" class="section level3">
+<h3>qpdf</h3>
+<p><strong>What is it?</strong></p>
+<blockquote>
+<p>QPDF is a command-line program that does structural, content-preserving transformations on PDF files. <a href="http://qpdf.sourceforge.net/">project’s website</a></p>
+</blockquote>
+<p><strong>How to install it</strong></p>
+<pre class="shell"><code>$ sudo yum install qpdf</code></pre>
+</div>
+<div id="r" class="section level3">
+<h3>R</h3>
+<p><strong>What is it?</strong></p>
+<blockquote>
+<p>R is a programming language and software environment for statistical computing and graphics supported by the R Foundation for Statistical Computing. (<a href="https://en.wikipedia.org/wiki/R_(programming_language)">wiki</a>)</p>
+</blockquote>
+<p><strong>How to install it</strong></p>
+<ol style="list-style-type: decimal">
+<li><p>Add the following repository</p>
+<pre class="shell"><code>$ # Info from https://cran.rstudio.com/bin/linux/redhat/README
+$ sudo rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm</code></pre></li>
+<li><p>Install R</p>
+<pre class="shell"><code>$ sudo yum install R</code></pre></li>
+</ol>
+<p>For personalizing system-wide R-sessions, type <code>?Rprofile</code> in the R terminal. The following R packages are installed (besides the default ones):</p>
+<ul>
+<li>For reporting: knitr, rmarkdown, texreg, shiny</li>
+<li>For SNA: statnet, sna, igraph, RSiena, netdiffuseR</li>
+<li>Others: dplyr, ggplot2, Rcpp, RcppArmadillo, AER, microbenchmark, ape, devtools, readxl, roxygen2, testtha, tm, stringr, xml2</li>
+</ul>
+<p>For more information, visit the “Ubuntu Packages for R” section in the R-project website: <a href="https://cran.r-project.org/bin/linux/ubuntu/README.html" class="uri">https://cran.r-project.org/bin/linux/ubuntu/README.html</a></p>
+</div>
+<div id="rstudio-server" class="section level3">
+<h3>RStudio-server</h3>
+<p><strong>What is it?</strong></p>
+<blockquote>
+<p>RStudio is a free and open-source integrated development environment (IDE) for R, a programming language for statistical computing and graphics. (<a href="https://en.wikipedia.org/wiki/RStudio">wiki</a>))</p>
+</blockquote>
+<p><strong>How to install it</strong></p>
+<ol style="list-style-type: decimal">
+<li><p>Installation is as easy as typing the following commands</p>
+<pre class="shell"><code>
+wget sudo yum install --nogpgcheck rstudio-server-rhel-1.0.136-x86_64.rpm</code></pre></li>
+<li><p>For security, we change the access Port by editing the following file <code>/etc/rstudio/rserver.conf</code>. Just add/replace the following line</p>
+<pre class="shell"><code>www-port=3624</code></pre>
+<p>This will make RStudio server to accept connections only from port 3624. This way, to login to RStudio server, you must type the following address in your web-browser URL bar <a href="http://bioghost.usc.edu:3624" class="uri">http://bioghost.usc.edu:3624</a>, but first, we need to open port 3624</p></li>
+<li><p>To open a port in CentOS 7, we do the following</p>
+<pre class="shell"><code>$ sudo firewall-cmd --zone=public --add-port=3624/tcp --permanent
+$ sudo firewall-cmd --reload</code></pre></li>
+<li><p>Finally, in order to make sure the login is smooth, we need to copy the pam login profile of the system to rstudio’s</p>
+<pre class="shell"><code>$ sudo cp /etc/pam.d/login /etc/pam.d/rstudio
+$ sudo rstudio-server restart</code></pre>
+<p>This solution was posted <a href="https://support.rstudio.com/hc/en-us/community/posts/200656406-Getting-RServer-to-work">here</a>, in the RStudio blog.</p></li>
+</ol>
+<p>For more information, visit the RStudio server website <a href="https://www.rstudio.com/products/rstudio/download-server/" class="uri">https://www.rstudio.com/products/rstudio/download-server/</a></p>
+<p><strong>Troubleshooting</strong></p>
+<p>What to do when RStudio server says</p>
+<pre class="shell"><code>rserver[23961]: ERROR system error 98 (Address already in use); OCCURRED AT: rstudio::core::Error rstudio::core::http::initTcpIpAcceptor(rstudio::core::http::SocketAcce...</code></pre>
+<pre class="shell"><code>$ sudo rstudio-server stop
+$ ps -aux | grep rserver
+$ sudo kill -9 [pid] # Or you can kill them all with sudo killall -9 rserver
+$ sudo rstudio-server start</code></pre>
+</div>
+<div id="the-devtools-r-package" class="section level3">
+<h3>The <code>devtools</code> R package</h3>
+<p><strong>What is it?</strong></p>
+<blockquote>
+<p>The aim of devtools is to make package development easier by providing R functions that simplify common tasks. (<a href="https://github.com/hadley/devtools">GitHub website of the project</a>)</p>
+</blockquote>
+<p><strong>How to install it</strong></p>
+<ol style="list-style-type: decimal">
+<li><p>For the <code>curl</code> package, run libcurl-devel <code>sudo yum install libcurl-devel</code></p></li>
+<li><p>For the <code>openssl</code> and <code>git2r</code> packages, run <code>sudo yum install openssl-devel</code></p>
+<p>Once the dependencies are install, each user can install it’s own copy of `devtools by typing</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="op">&gt;</span><span class="st"> </span><span class="kw">install.packages</span>(<span class="st">&quot;devtools&quot;</span>)</span></code></pre></div></li>
+</ol>
+</div>
+<div id="the-roxygen2-package" class="section level3">
+<h3>The <code>roxygen2</code> package</h3>
+<p><strong>What is it?</strong></p>
+<p><strong>How to install it</strong></p>
+<ol style="list-style-type: decimal">
+<li><p>It requires the <code>xml2</code> R-package, which requires the <code>libxml2-devel</code> library <code>sudo yum install libxml2-devel</code></p></li>
+<li><p>Once the dependencies are install, each user can install it’s own copy of `devtools by typing</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="op">&gt;</span><span class="st"> </span><span class="kw">install.packages</span>(<span class="st">&quot;roxygen2&quot;</span>)</span></code></pre></div></li>
+</ol>
+</div>
+<div id="the-rgl-package" class="section level3">
+<h3>The <code>rgl</code> package</h3>
+<p><strong>What is it?</strong></p>
+<p><strong>How to install it</strong></p>
+<p>Currently, while the package’s installation process is successful, creating rgl devices is not possible at the time due to issues with X11 (needs to be resolved). For now, here are the instructions to install rgl.</p>
+<ol style="list-style-type: decimal">
+<li><p>To install rgl, we need some extra libraries:</p>
+<pre class="shell"><code>$ sudo yum install xauth</code></pre></li>
+<li><p>Once the dependencies are install, each user can install it’s own copy of `devtools by typing</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="op">&gt;</span><span class="st"> </span><span class="kw">install.packages</span>(<span class="st">&quot;rgl&quot;</span>)</span></code></pre></div></li>
+<li><p><a href="http://linuxtoolkit.blogspot.com/2015/10/libgl-error-unable-to-load-driver.html" class="uri">http://linuxtoolkit.blogspot.com/2015/10/libgl-error-unable-to-load-driver.html</a></p>
+<pre class="shell"><code>$ sudo yum install mesa-libGL-devel mesa-libGLU-devel libpng-devel</code></pre></li>
+</ol>
+<p>More information go to the package’s <a href="https://cran.r-project.org/web/packages/rgl/README">README</a> file</p>
+</div>
+<div id="net-tools" class="section level3">
+<h3>net-tools</h3>
+<p><strong>What is it?</strong></p>
+<p>I use it to check the ports usage: <code>netstat -anp | grep 3624</code> will list the connections that are using port 3624.</p>
+<p><strong>How to install it</strong></p>
+<pre class="shell"><code>$ sudo yum install net-tools</code></pre>
+</div>
+<div id="the-dmrcate-r-package-bioconductor" class="section level3">
+<h3>The DMRcate R package (Bioconductor)</h3>
+<p>This needs BiocManager (which can be install via install.packages) and, for some indirect dependency, the libjpeg library, which was installed using <code>sudo yum install libjpeg-*</code>. Once the dependencies are done (there could be a few more), you can install the package using <code>BiocManager::install("DMRcate")</code>.</p>
+</div>
+<div id="the-rjags-r-package" class="section level3">
+<h3>The <code>rjags</code> R package</h3>
+<p><strong>What is it?</strong></p>
+<blockquote>
+<p>Interface to the JAGS MCMC library. (rjags at <a href="https://CRAN.R-project.org/package=rjags">CRAN</a>)</p>
+</blockquote>
+<p><strong>How to install it (if you have sudo)</strong></p>
+<ol style="list-style-type: decimal">
+<li><p>Install the jags and jags-dev packages in the OS:</p>
+<pre class="shell"><code>$ sudo rpm -Uhv http://download.opensuse.org/repositories/home:/cornell_vrdc/CentOS_7/x86_64/jags4-4.1.0-65.2.x86_64.rpm
+$ sudo rpm -Uhv http://download.opensuse.org/repositories/home:/cornell_vrdc/CentOS_7/x86_64/jags4-devel-4.1.0-65.2.x86_64.rpm
+$ sudo rpm -Uhv http://download.opensuse.org/repositories/home:/cornell_vrdc/CentOS_7/x86_64/jags4-debuginfo-4.1.0-65.2.x86_64.rpm</code></pre></li>
+<li><p>Then, install the R package using <code>install.packages("rjags")</code>.</p></li>
+</ol>
+<p><strong>How to install it (if you don’t have sudo)</strong></p>
+<ol style="list-style-type: decimal">
+<li><p>Get JAGS <a href="http://mcmc-jags.sourceforge.net/" class="uri">http://mcmc-jags.sourceforge.net/</a>, in particular from <a href="https://sourceforge.net/projects/mcmc-jags/files/JAGS/4.x/Source/" class="uri">https://sourceforge.net/projects/mcmc-jags/files/JAGS/4.x/Source/</a></p></li>
+<li><p>tar xf JAGS*.tar.gz</p></li>
+<li><p>Need to get LAPACK <a href="https://github.com/Reference-LAPACK/lapack/archive/v3.9.0.tar.gz" class="uri">https://github.com/Reference-LAPACK/lapack/archive/v3.9.0.tar.gz</a></p></li>
+</ol>
+</div>
+<div id="apache-http-server" class="section level3">
+<h3>Apache HTTP Server</h3>
+<p><strong>What is it?</strong></p>
+<blockquote>
+<p>is free and open-source cross-platform web server software, released under the terms of Apache License 2.0. Apache is developed and maintained by an open community of developers under the auspices of the Apache Software Foundation (Apache at <a href="https://en.wikipedia.org/wiki/Apache_HTTP_Server">Wiki</a>)</p>
+</blockquote>
+<p><strong>How to install it</strong></p>
+<ol style="list-style-type: decimal">
+<li><p>Install httpd</p>
+<pre><code>$ sudo yum -y install httpd</code></pre></li>
+<li><p>Start and enable the service</p>
+<pre class="shell"><code>$ sudo systemctl start httpd
+$ sudo systemctl enable httpd.service</code></pre></li>
+<li><p>Setting up the firewall (adding port 80, http)</p>
+<pre class="shell"><code>$ sudo firewall-cmd --permanent --add-port=80</code></pre></li>
+</ol>
+<p>The webserver should show a default website when following <a href="http://bioghost.usc.edu" class="uri">http://bioghost.usc.edu</a>. The default can be modified in <code>/var/www/html/</code></p>
+</div>
+<div id="rstudio-connect" class="section level3">
+<h3>RStudio connect</h3>
+<p><strong>What is it?</strong></p>
+<blockquote>
+<p>RStudio Connect is a new publishing platform for the work your teams create in R. Share Shiny applications, R Markdown reports, Plumber APIs, dashboards, plots, and more in one convenient place. Use push-button publishing from the RStudio IDE, scheduled execution of reports, and flexible security policies to bring the power of data science to your entire enterprise. (RStudio connect <a href="https://www.rstudio.com/products/connect/">website</a>)</p>
+</blockquote>
+<p><strong>How to install it</strong></p>
+<p>RStudio grants full licenses for educational purposes. In our case, Prof. Marjoram got us a 1 year license to try it out (usually is for 45 days-only). To install and active RStudio connect you need to contact RStudio directly. Once it has been set up, one important bit is to configure the login capabilities:</p>
+<ol style="list-style-type: decimal">
+<li><p>Change the file <code>/etc/rstudio-connect/rstudio-connect.gcfg</code> and set the following option: <code>Password = pam</code></p>
+<pre><code>[Authentication]
+Provider = pam             </code></pre>
+<p>This will cause RStudio connect to use the same login system that we use in Bioghost.</p></li>
+<li><p>Edit the file <code>/etc/pam.d/rstudio-connect</code> to be as the following:</p>
+<pre><code>#%PAM-1.0
+auth [user_unknown=ignore success=ok ignore=ignore default=bad] pam_securetty.so
+auth       substack     system-auth
+auth       include      postlogin
+account    required     pam_nologin.so
+account    include      system-auth
+password   include      system-auth
+# pam_selinux.so close should be the first session rule
+session    required     pam_selinux.so close
+session    required     pam_loginuid.so
+session    optional     pam_console.so
+# pam_selinux.so open should only be followed by sessions to be executed in the user context
+session    required     pam_selinux.so open
+session    required     pam_namespace.so
+session    optional     pam_keyinit.so force revoke
+session    include      system-auth
+session    include      postlogin
+-session   optional     pam_ck_connector.so</code></pre>
+<p>These very same rules are the ones we use for RStudio Server.</p></li>
+<li><p>Stop and start the service as follows:</p>
+<pre><code>sudo service rstudio-connect stop
+sudo service rstudio-connect start</code></pre>
+<p>And you should be good to go.</p></li>
+</ol>
+<p>Currently RStudio connect is set with the default configuration for http access. So to access the dashboard you need to go to <a href="http://bioghost.usc.edu:3939" class="uri">http://bioghost.usc.edu:3939</a>. This address is also the one you need to use in order to setup RStudio connect in your RStudio server machine.</p>
+<p><strong>Adding RStudio connect to RStudio</strong></p>
+<p>You can use this directly with RStudio. The only requirement is to have a prevmed account (which all of you have), and be under the USC network (VPN if you are outside USC). To publish either a shiny app or any other markdown document (html output of course), you need to do the following:</p>
+<p>To add the new publishing tool:</p>
+<ol style="list-style-type: decimal">
+<li>Go to Tools &gt; Global Options</li>
+<li>Go to “Publish”</li>
+<li>Click on “Connect”, and select “RStudio Connect”</li>
+<li>The public URL is <a href="http://bioghost.usc.edu:3939" class="uri">http://bioghost.usc.edu:3939</a> If everything works fine, you should be asked to login to RStudio connect in bioghost (I did had a problem relating to an old version of RCurl, which is needed for this!). Enter your prevmed account credentials.</li>
+<li>Click on “Connect” and you are good to go!</li>
+</ol>
+<p>To publish new content, open any Rmarkdown/Shiny app and:</p>
+<ol style="list-style-type: decimal">
+<li>Go to File &gt; Publish</li>
+<li>Follow the instructions</li>
+</ol>
+<p>Here you can find an example app that I just published: <a href="http://bioghost.usc.edu:3939/rstudio-connect-example/" class="uri">http://bioghost.usc.edu:3939/rstudio-connect-example/</a> You need to login to be able to look at it!</p>
+</div>
+<div id="shiny-server" class="section level3">
+<h3>shiny-server</h3>
+<p><strong>What is it?</strong></p>
+<blockquote>
+<p>Shiny is an R package that makes it easy to build interactive web apps straight from R. You can host standalone apps on a webpage or embed them in R Markdown documents or build dashboards. You can also extend your Shiny apps with CSS themes, htmlwidgets, and JavaScript actions. (shiny <a href="http://shiny.rstudio.com/">website</a>)</p>
+</blockquote>
+<p><strong>How to install it</strong></p>
+<ol start="0" style="list-style-type: decimal">
+<li><p>Make sure you have <code>shiny</code> and <code>rmarkdown</code> available system-wide, from R:</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a><span class="op">&gt;</span><span class="st"> </span><span class="kw">install.packages</span>(<span class="kw">c</span>(<span class="st">&quot;shiny&quot;</span>, <span class="st">&quot;rmarkdown&quot;</span>))</span></code></pre></div></li>
+<li><p>To install</p>
+<pre class="shell"><code>$ wget https://download3.rstudio.org/centos5.9/x86_64/shiny-server-1.5.5.872-rh5-x86_64.rpm
+$ sudo yum install --nogpgcheck shiny-server-1.5.5.872-rh5-x86_64.rpm</code></pre></li>
+<li><p>You need to open the default port (which can be modified <code>/etc/shiny-server/shiny-server.conf</code>) as follows:</p>
+<pre class="shell"><code>$ sudo firewall-cmd --zone=public --add-port=3838/tcp --permanent
+$ sudo firewall-cmd --reload</code></pre></li>
+<li><p>To start/stop (more details <a href="http://docs.rstudio.com/shiny-server/#upstart-ubuntu-12.04-through-14.10-redhat-6">here</a>)</p>
+<pre class="shell"><code>$ sudo /sbin/service shiny-server start1</code></pre></li>
+</ol>
+<p>To add apps, you need to add them to the folder <code>/srv/shiny-server</code>, and you can access them using <a href="http://bioghost.usc.edu:3838" class="uri">http://bioghost.usc.edu:3838</a> (the default website).</p>
+</div>
+<div id="docker" class="section level3">
+<h3>docker</h3>
+<p><strong>What is it?</strong></p>
+<p><strong>How to install it?</strong></p>
+<p>Follow the instructions here <a href="https://docs.docker.com/engine/installation/linux/docker-ce/centos/#set-up-the-repository" class="uri">https://docs.docker.com/engine/installation/linux/docker-ce/centos/#set-up-the-repository</a></p>
+<p>To allow group usage, follow these instructions: <a href="https://askubuntu.com/questions/477551/how-can-i-use-docker-without-sudo" class="uri">https://askubuntu.com/questions/477551/how-can-i-use-docker-without-sudo</a></p>
+</div>
+<div id="autoconf" class="section level3">
+<h3>autoconf</h3>
+<p><strong>What is it?</strong></p>
+<blockquote>
+<p>Autoconf is an extensible package of M4 macros that produce shell scripts to automatically configure software source code packages. These scripts can adapt the packages to many kinds of UNIX-like systems without manual user intervention. Autoconf creates a configuration script for a package from a template file that lists the operating system features that the package can use, in the form of M4 macro calls. —-autoconf <a href="https://www.gnu.org/software/autoconf/autoconf.html">website</a></p>
+</blockquote>
+<p><strong>How to install it</strong></p>
+<pre class="shell"><code>$ sudo yum install autoconf</code></pre>
+</div>
+<div id="mysql-devel" class="section level3">
+<h3>mysql-devel</h3>
+<p><strong>What is it?</strong></p>
+<p><strong>How to install it</strong></p>
+<pre class="shell"><code>$ sudo yum install mysql-devel</code></pre>
+</div>
+<div id="stata-15.1" class="section level3">
+<h3>Stata 15.1</h3>
+<p><strong>What is it?</strong></p>
+<p><strong>How to install it</strong></p>
+<p>We got one of the LICENSES that George Martinez has, from there:</p>
+<pre class="shell"><code>$ sudo -s
+$ cd /tmp/
+$ mkdir statafiles
+$ cd statafiles
+$ tar -zxf /home/you/Downloads/Stata15Linux64.tar.gz
+$ cd /usr/local
+$ mkdir stata15
+$ cd stata15
+$ /tmp/statafiles/install</code></pre>
+<p>And follow the instructions afterwards. To make it system wide available:</p>
+<pre class="shell"><code>$ cd ..
+$ sudo chmod -R 755 stata15</code></pre>
+</div>
+<div id="windows-shared-folder" class="section level3">
+<h3>Windows shared folder</h3>
+<p><strong>What is it?</strong></p>
+<p>Install <code>mount.cifs</code></p>
+<pre><code>$ sudo yum install -y cifs-utils</code></pre>
+<p>To mount a drive</p>
+<pre><code>$ sudo mount.cifs //[SUBDOMAIN].usc.edu/[FOLDER?] /path/to/mount -o username=[USERNAME] uid=[GET IT WITH id] dir_mode=0770 file_mode=0770</code></pre>
+<p>In the case of <code>username</code>, our experience tells us that we don’t need to use the subdomain.</p>
+</div>
+<div id="bash-completion" class="section level3">
+<h3>bash completion</h3>
+<p><strong>What is it</strong></p>
+<p><strong>How to install it</strong></p>
+<p>Following <a href="https://www.cyberciti.biz/faq/fedora-redhat-scientific-linuxenable-bash-completion/">these</a> instructions:</p>
+<pre class="shell"><code>$ sudo yum install bash-completion</code></pre>
+</div>
+<div id="gnu-multiple-precision-arithmetic-library-gmp" class="section level3">
+<h3>GNU Multiple Precision Arithmetic Library (GMP)</h3>
+<p><strong>What is it</strong></p>
+<blockquote>
+<p>GNU Multiple Precision Arithmetic Library is a free library for arbitrary-precision arithmetic, operating on signed integers, rational numbers, and floating point numbers. (<a href="https://en.wikipedia.org/wiki/GNU_Multiple_Precision_Arithmetic_Library">wiki</a>)</p>
+</blockquote>
+<p>It is required by the R package <a href="https://cran.r-project.org/package=gmp">gmp</a>.</p>
+<p><strong>How to install it</strong></p>
+<pre class="shell"><code>$ sudo yum install gmp-devel</code></pre>
+</div>
+<div id="adding-a-centos-server-7-to-a-domain" class="section level3">
+<h3>Adding a CentOS server 7 to a domain</h3>
+<p>Before this configuration works, we need to have the DNS config file pointing to our USC’s prevmed machine (a windows machine). To do so we have to have the folling settings in the <code>/etc/resolv.conf</code> file:</p>
+<pre><code>search usc.edu
+nameserver 10.148.80.211</code></pre>
+<p>Changing this does not need a restart or anything (see <a href="https://www.dnsknowledge.com/q-a/howto-edit-etcresolv-conf-file-in-centos/">here</a>).</p>
+<ol style="list-style-type: decimal">
+<li><p>Run on CentOS server as root</p></li>
+<li><p><code>yum install realmd sssd ntpdate ntp adcli</code> (installs the need packages)</p></li>
+<li><p><code>systemctl enable ntpd.service</code> (enables ntp service - required to keep times synced)</p></li>
+<li><p><code>ntpdate prevmed.usc.edu</code> (or name of domain to join - syncs time to domin server)</p></li>
+<li><p><code>systemctl start ntpd.service</code> (starts the ntp service)</p></li>
+<li><p><code>realm join -U odin prevmed.usc.edu</code> (or administrator account and domain if not prevmed.usc.edu)</p>
+<p>(should be prompted for password for domain admin account)</p>
+<p>No message means it worked.</p></li>
+</ol>
+<p>Can run the follow command to verify the installation. <code>realm list</code>.</p>
+</div>
+<div id="syrupy-system-resource-usage-profile-um-yeah" class="section level3">
+<h3>SYRUPY (SYstem Resource Usage Profile …um, Yeah)</h3>
+<p><strong>What is it</strong></p>
+<blockquote>
+<p>Syrupy is a Python script that regularly takes snapshots of the memory and CPU load of one or more running processes, so as to dynamically build up a profile of their usage of system resources. (<a href="https://github.com/jeetsukumaran/Syrupy">repo</a>)</p>
+</blockquote>
+<p><strong>How to install it</strong></p>
+<ol style="list-style-type: decimal">
+<li><p>Download the repository using git: <code>git clone https://github.com/jeetsukumaran/Syrupy</code></p></li>
+<li><p>Run the installation file <code>sudo python setup.py install</code></p></li>
+</ol>
+<p>To execute it you just need to type, for example,</p>
+<pre class="shell"><code>$ syrupy.py Rscript -e &quot;matrix(NA, 1000, 1000)&quot;</code></pre>
+<p>And it will get the memory snapshots of the command out to a log file that you can later analyze.</p>
+</div>
+</div>
+</div>
+<div id="commands-cheat-sheet" class="section level1">
+<h1>Commands cheat sheet</h1>
+<div id="r-cmd" class="section level2">
+<h2>R CMD</h2>
+<p>You can send batch jobs to R via command line in two ways:</p>
+<ol style="list-style-type: decimal">
+<li><p>Using the <code>R CMD BATCH</code>. Its syntax is</p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb42-1"><a href="#cb42-1"></a>$ <span class="ex">R</span> CMD BATCH -- myjob.R myjob.Rout <span class="kw">&amp;</span></span></code></pre></div>
+<p>Where <code>myjob.Rout</code> is a plain text file which dumps the output from <code>myjob.R</code>.</p></li>
+<li><p>Using <code>Rscript</code>. Its syntax is</p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb43-1"><a href="#cb43-1"></a>$ <span class="ex">Rscript</span> myjob.R <span class="op">&gt;</span> myjob.Rout <span class="kw">&amp;</span></span></code></pre></div>
+<p>Follows the same logic as the previous method, with the difference that not everything is printed</p></li>
+</ol>
+</div>
+<div id="user-management" class="section level2">
+<h2>User management</h2>
+<div class="sourceCode" id="cb44"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb44-1"><a href="#cb44-1"></a><span class="co"># Add user</span></span>
+<span id="cb44-2"><a href="#cb44-2"></a><span class="ex">adduser</span> [username]</span>
+<span id="cb44-3"><a href="#cb44-3"></a></span>
+<span id="cb44-4"><a href="#cb44-4"></a><span class="co"># Add group</span></span>
+<span id="cb44-5"><a href="#cb44-5"></a><span class="ex">addgroup</span> [groupname]</span>
+<span id="cb44-6"><a href="#cb44-6"></a></span>
+<span id="cb44-7"><a href="#cb44-7"></a><span class="co"># Add user to a group</span></span>
+<span id="cb44-8"><a href="#cb44-8"></a><span class="fu">sudo</span> usermod -G[groupname] -a [username]</span></code></pre></div>
+<p>In the case of Prevmed accounts</p>
+<ol style="list-style-type: decimal">
+<li>Add the user using <code>sudo realm permit &lt;username@PREVMED.USC.EDU&gt;</code></li>
+<li>Ask the user to login using ssh</li>
+<li>Once that is complete, he should be able to access RStudio server.</li>
+</ol>
+<p>If the process does not work, it is usually due to a change in the DNS server address. To solve this, follow these instructions (directly extracted from <a href="https://www.thegeekdiary.com/centos-rhel-dns-servers-in-etcresolv-conf-change-after-a-rebootnetwork-service-restart-how-to-make-them-permanent/">this website</a>):</p>
+<p>You would face this issue after a reboot or a network service restart. This usually happens as the scripts /etc/sysconfig/network-scripts/ifup-post and /etc/sysconfig/network-scripts/ifdown-post checks for the parameters “RESOLV_MODS=no” or “PEERDNS=no” in the network interface configuration file such as /etc/sysconfig/network-scripts/ifcfg-*. If these either of these parameters are not present, it will replace the contents of /etc/resolv.conf with /etc/resolv.conf.save. By default, PEERDNS and RESOLV_MODS are null.</p>
+<ol style="list-style-type: decimal">
+<li><p>The /etc/resolv.conf file will be overwritten if any network interfaces use DHCP for activation. To prevent this, ensure such interfaces have PEERDNS=no set in their ifcfg file, for example</p>
+<pre><code># cat /etc/sysconfig/network-scripts/ifcfg-eth0
+TYPE=Ethernet
+DEVICE=eth0
+BOOTPROTO=dhcp
+PEERDNS=no</code></pre></li>
+<li><p>The ifcfg-file directives DNS1 and DNS2 can also lead to modification of resolv.conf. To prevent this, either remove said directives or use chattr(1) to make resolv.conf immutable to changes, i.e.:</p>
+<pre><code># chattr +i /etc/resolv.conf</code></pre></li>
+</ol>
+</div>
+<div id="file-management" class="section level2">
+<h2>File management</h2>
+<div class="sourceCode" id="cb47"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb47-1"><a href="#cb47-1"></a><span class="co"># Change owner ship</span></span>
+<span id="cb47-2"><a href="#cb47-2"></a><span class="fu">chown</span> [user][:groupname]</span></code></pre></div>
+<p>sudo chown -R www-<a href="data:www-data" class="uri">data:www-data</a> /srv/www sudo chmod -R g+w /srv/www</p>
+</div>
+<div id="parallel" class="section level2">
+<h2>Parallel</h2>
+<p>Setup</p>
+<ol style="list-style-type: decimal">
+<li><p>Use <code>ssh-keygen</code> to create private and public keys in the client,</p>
+<div class="sourceCode" id="cb48"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb48-1"><a href="#cb48-1"></a>$ <span class="fu">ssh-keygen</span> -t rsa</span></code></pre></div></li>
+<li><p>Use <code>ssh-copy-id</code> to send a copy of the public key to the server</p>
+<div class="sourceCode" id="cb49"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb49-1"><a href="#cb49-1"></a>$ <span class="ex">ssh-copy-id</span> -p 2436 vegayon@vega2.usc.edu</span></code></pre></div>
+<p>Will prompt you asking for password. After that you won’t be needing it since from this machine you’ll be able to connect simply using <code>ssh -p 2436 vegayon@vega2.usc.edu</code></p></li>
+<li><p>In ufw add the following rules needed for R to create a con with localhost:</p>
+<div class="sourceCode" id="cb50"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb50-1"><a href="#cb50-1"></a><span class="ex">Anywhere</span>                   ALLOW       127.0.0.1</span>
+<span id="cb50-2"><a href="#cb50-2"></a><span class="ex">2436</span>                       ALLOW       128.125.0.0/16</span>
+<span id="cb50-3"><a href="#cb50-3"></a><span class="ex">2436</span>                       ALLOW       68.181.0.0/16</span></code></pre></div></li>
+<li><p>From R run</p>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1"></a><span class="op">&gt;</span><span class="st"> </span>cl &lt;-<span class="st"> </span><span class="kw">makePSOCKcluster</span>(<span class="kw">rep</span>(<span class="st">&#39;vega2.usc.edu&#39;</span>,<span class="dv">4</span>), <span class="dt">user=</span><span class="st">&#39;vegayon&#39;</span>, <span class="dt">rshcmd=</span><span class="st">&#39;ssh -p2436&#39;</span>)</span></code></pre></div>
+<p>and voila!</p></li>
+<li><p>Further, we can make this shorter. Changing the file <code>/etc/ssh/ssh_config</code>, we can add the line <code>Port 2436</code> to make the default outgoing connection to</p>
+<ol start="2436" style="list-style-type: decimal">
+<li>And then we can write:</li>
+</ol>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1"></a><span class="op">&gt;</span><span class="st"> </span>cl &lt;-<span class="st"> </span><span class="kw">makePSOCKcluster</span>(<span class="kw">rep</span>(<span class="st">&#39;vegayon@vega2.usc.edu&#39;</span>,<span class="dv">4</span>))</span></code></pre></div>
+<p>In the case that you use your desktop or other computer as a server, it is wise to pass the argument <code>master</code> to the function <code>makePSOCKcluster</code>. This because usually, while you may have your computer connected to the network working as a server, R uses the name of your computer as default for the <code>master</code>, hence, instead of passing the argument <code>MASTER=vegayon.usc.edu</code> (for example), it passes <code>MASTER=george-computer</code> (which is the name of my computer). A more concrete example:</p>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1"></a><span class="op">&gt;</span><span class="st"> </span>cl &lt;-<span class="st"> </span><span class="kw">makePSOCKcluster</span>(<span class="kw">rep</span>(<span class="st">&#39;george@vegayon.usc.edu&#39;</span>,<span class="dv">4</span>), <span class="dt">master=</span><span class="st">&quot;vegayon.usc.edu&quot;</span>)</span></code></pre></div>
+<p>That works, while the following may not</p>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1"></a><span class="op">&gt;</span><span class="st"> </span>cl &lt;-<span class="st"> </span><span class="kw">makePSOCKcluster</span>(<span class="kw">rep</span>(<span class="st">&#39;george@vegayon.usc.edu&#39;</span>,<span class="dv">4</span>))</span></code></pre></div></li>
+</ol>
+</div>
+</div>
+<div id="website" class="section level1">
+<h1>Website</h1>
+<p>The index webpage is located as /var/www/html/index.html</p>
+</div>
+<div id="ssl-certificate" class="section level1">
+<h1>SSL Certificate</h1>
+<ol style="list-style-type: decimal">
+<li><p>Request a certificate to itservices.usc.edu by providing them with the corresponding request: <code>openssl req -nodes -newkey rsa:2048 -keyout bioghost.key -out bioghost.csr</code></p></li>
+<li><p>Once approved, download your certificate and the intermediate certificate, e.g. bioghost_usc_edu_cert.cer and <code>bioghost_usc_edu_iterm.cer</code> and, together with the key generated in step 1, copy them to the following paths:</p>
+<pre><code>cp bioghost_usc_edu_cert.cer /etc/pki/tls/certs
+cp bioghost.key /etc/pki/tls/private
+cp bioghost_usc_edu_interm.csr /etc/pki/tls/private</code></pre></li>
+<li><p>Update the apache conf file located at <code>/etc/httpd/conf.d/ssl.conf</code> with the following information:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Directives</th>
+<th>Path to Enter</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>SSLCertificateFile</td>
+<td>Certificate file path</td>
+</tr>
+<tr class="even">
+<td>SSLCertificateKeyFile</td>
+<td>Key file path</td>
+</tr>
+<tr class="odd">
+<td>SSLCertificateChainFile</td>
+<td>Intermediate bundle path</td>
+</tr>
+</tbody>
+</table></li>
+<li><p>Update the virtual hosts at <code>/etc/httpd/conf/httpd.conf</code> by setting:</p>
+<pre><code>&lt;VirtualHost *:80&gt;
+        ServerName bioghost.usc.edu
+        # ServerAlias 
+        Redirect &quot;/&quot; &quot;https://bioghost.usc.edu&quot;
+        # DocumentRoot &quot;/var/www/html/workshop&quot; 
+&lt;/VirtualHost&gt;
+</code></pre>
+<p>And the file <code>/etc/httpd/conf/ssl.conf</code> by setting</p>
+<pre><code>DocumentRoot &quot;/var/www/html/workshop&quot;
+ServerName bioghost.usc.edu:443</code></pre></li>
+<li><p>Add the https protocol to firewall-cmd <code>sudo firewall-cmd --add-service=https --permanent</code></p></li>
+<li><p>Restart the apache server by typing <code>sudo apachectl restart</code>.</p></li>
+</ol>
+<p>More info at:</p>
+<ul>
+<li><a href="https://www.ssl2buy.com/wiki/install-ssl-certificate-on-apache-centos" class="uri">https://www.ssl2buy.com/wiki/install-ssl-certificate-on-apache-centos</a></li>
+<li><a href="https://www.centos.org/docs/5/html/Deployment_Guide-en-US/s1-apache-startstop.html" class="uri">https://www.centos.org/docs/5/html/Deployment_Guide-en-US/s1-apache-startstop.html</a></li>
+<li><a href="https://wiki.centos.org/HowTos/Https" class="uri">https://wiki.centos.org/HowTos/Https</a></li>
+</ul>
+</div>
+<div id="transferring-files-among-users" class="section level1">
+<h1>Transferring Files among Users</h1>
+<p>A shared folder is created to allow users to transfer files on the bioghost, i.e., without downloading these files to one’s local computer and uploading later. The folder is only for transferring purpose so please do not leave any files unattended or use the <code>/home/shared</code> folder as storage.</p>
+<ol style="list-style-type: decimal">
+<li><p>Go to the Terminal under your account on the bioghost (next to the Console in Rstudio).</p></li>
+<li><p>Copy the file to the shared folder.</p>
+<div class="sourceCode" id="cb58"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb58-1"><a href="#cb58-1"></a>$ <span class="fu">cp</span> /your_folder_name/filename.R /home/shared</span></code></pre></div></li>
+<li><p>Ask the other user to move that file to his/her own directory.</p>
+<div class="sourceCode" id="cb59"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb59-1"><a href="#cb59-1"></a>$ <span class="fu">mv</span> /home/shared/filename.R /destination_folder/</span></code></pre></div></li>
+</ol>
+</div>
+<div id="cheat-sheet" class="section level1">
+<h1>Cheat Sheet</h1>
+<table>
+<colgroup>
+<col width="32%" />
+<col width="46%" />
+<col width="21%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Example</th>
+<th>Problem</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>cat /etc/centos-release</code></td>
+<td>Checkout the version of the OS</td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>sudo yum clean all</code></td>
+<td>Cleans cached repos</td>
+<td>Neat when trying to install something fails</td>
+</tr>
+<tr class="odd">
+<td><code>sudo firewall-cmd --zone=public --add-port=3624/tcp --permanent</code></td>
+<td>Open port 3624 in zone “public”</td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>firewall-cmd --get-active-zones</code></td>
+<td>List active zones in the firewall (more <a href="https://www.linode.com/docs/security/firewalls/introduction-to-firewalld-on-centos/">here</a>)</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>sudo cat /var/log/messages</code></td>
+<td>Show system log</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

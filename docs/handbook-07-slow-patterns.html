@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Slow R patterns</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  background-color: #f8f8f8; }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #c4a000; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #000000; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #000000; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #000000; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h2 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h3 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h4 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h5 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h6 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">USC Software Dev</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Handbook
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="handbook-01-standards.html">Standards</a>
+    </li>
+    <li>
+      <a href="handbook-02-r_package.html">R packages</a>
+    </li>
+    <li>
+      <a href="handbook-03-parallel.html">Parallel</a>
+    </li>
+    <li>
+      <a href="handbook-04-testing.html">Testing</a>
+    </li>
+    <li>
+      <a href="handbook-05-profiling.html">Profiling</a>
+    </li>
+    <li>
+      <a href="handbook-06-hpc.html">High Performance Computing</a>
+    </li>
+    <li>
+      <a href="handbook-07-slow-patterns.html">Slow R patterns</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="bioghost-server.html">Bioghost Server</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Slow R patterns</h1>
+
+</div>
+
+
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(magrittr)</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="kw">library</span>(ggplot2)</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="kw">theme_set</span>(<span class="kw">theme_minimal</span>())</span></code></pre></div>
+<p>This document serves as a starting point for code optimizations. It includes possible optimization strategies.</p>
+<p>All code here is being benchmarked using the <a href="http://bench.r-lib.org/">bench</a> package.</p>
+<div id="for-loops-vs-apply" class="section level2">
+<h2>For loops vs apply()</h2>
+<p>Imagine you have a matrix of numbers and you want to compute the row-wise variance. This can be done using a for loop or using the apply function. You will most likely not see any big speed improvements, but the lines of codes can sometimes be considerably be improved.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>data &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">rnorm</span>(<span class="dv">100000</span>), <span class="dt">nrow =</span> <span class="dv">1000</span>)</span>
+<span id="cb2-2"><a href="#cb2-2"></a></span>
+<span id="cb2-3"><a href="#cb2-3"></a>rowVars &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</span>
+<span id="cb2-4"><a href="#cb2-4"></a>  x_length &lt;-<span class="st"> </span><span class="kw">nrow</span>(x)</span>
+<span id="cb2-5"><a href="#cb2-5"></a>  res &lt;-<span class="st"> </span><span class="kw">numeric</span>(x_length)</span>
+<span id="cb2-6"><a href="#cb2-6"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="kw">seq_len</span>(x_length)) {</span>
+<span id="cb2-7"><a href="#cb2-7"></a>    res[i] &lt;-<span class="st"> </span><span class="kw">var</span>(x[i, ])</span>
+<span id="cb2-8"><a href="#cb2-8"></a>  }</span>
+<span id="cb2-9"><a href="#cb2-9"></a>  res</span>
+<span id="cb2-10"><a href="#cb2-10"></a>}</span>
+<span id="cb2-11"><a href="#cb2-11"></a></span>
+<span id="cb2-12"><a href="#cb2-12"></a>bench<span class="op">::</span><span class="kw">mark</span>(</span>
+<span id="cb2-13"><a href="#cb2-13"></a>  <span class="dt">rowVars =</span> <span class="kw">rowVars</span>(data),</span>
+<span id="cb2-14"><a href="#cb2-14"></a>  <span class="dt">applt =</span> <span class="kw">apply</span>(data, <span class="dv">1</span>, var)</span>
+<span id="cb2-15"><a href="#cb2-15"></a>)</span></code></pre></div>
+<pre><code>## # A tibble: 2 x 6
+##   expression      min   median `itr/sec` mem_alloc `gc/sec`
+##   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;
+## 1 rowVars      10.4ms   11.4ms      86.9    1.58MB     59.3
+## 2 applt          10ms   10.7ms      92.3    2.02MB     65.4</code></pre>
+</div>
+<div id="apply-sums" class="section level2">
+<h2>Apply Sums</h2>
+<p>If you are about to use <code>apply()</code> with <code>FUN = mean</code> or <code>sum()</code> you might take a look at <code>rowSums()</code>, <code>colsums()</code>, <code>rowMeans()</code>, and <code>colMeans()</code>. They will do the same but faster (NaN and NA are handled slightly differently to tread lightly). the <code>.rowSums()</code> is a faster variant that only works on numeric matrices and does not name the result.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>data &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">rnorm</span>(<span class="dv">10000</span>), <span class="dt">nrow =</span> <span class="dv">100</span>, <span class="dt">ncol =</span> <span class="dv">100</span>)</span>
+<span id="cb4-2"><a href="#cb4-2"></a></span>
+<span id="cb4-3"><a href="#cb4-3"></a>bench<span class="op">::</span><span class="kw">mark</span>(</span>
+<span id="cb4-4"><a href="#cb4-4"></a>  <span class="dt">apply =</span> <span class="kw">apply</span>(data, <span class="dv">1</span>, sum),</span>
+<span id="cb4-5"><a href="#cb4-5"></a>  <span class="dt">rowSums =</span> <span class="kw">rowSums</span>(data),</span>
+<span id="cb4-6"><a href="#cb4-6"></a>  <span class="dt">.rowSums =</span> <span class="kw">.rowSums</span>(data, <span class="dv">100</span>, <span class="dv">100</span>)</span>
+<span id="cb4-7"><a href="#cb4-7"></a>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">plot</span>()</span></code></pre></div>
+<pre><code>## Loading required namespace: tidyr</code></pre>
+<p><img src="handbook-07-slow-patterns_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>data &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">rnorm</span>(<span class="dv">1000000</span>), <span class="dt">nrow =</span> <span class="dv">1000</span>, <span class="dt">ncol =</span> <span class="dv">1000</span>)</span>
+<span id="cb6-2"><a href="#cb6-2"></a></span>
+<span id="cb6-3"><a href="#cb6-3"></a>bench<span class="op">::</span><span class="kw">mark</span>(</span>
+<span id="cb6-4"><a href="#cb6-4"></a>  <span class="dt">apply =</span> <span class="kw">apply</span>(data, <span class="dv">1</span>, sum),</span>
+<span id="cb6-5"><a href="#cb6-5"></a>  <span class="dt">rowSums =</span> <span class="kw">rowSums</span>(data),</span>
+<span id="cb6-6"><a href="#cb6-6"></a>  <span class="dt">.rowSums =</span> <span class="kw">.rowSums</span>(data, <span class="dv">1000</span>, <span class="dv">1000</span>)</span>
+<span id="cb6-7"><a href="#cb6-7"></a>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">plot</span>()</span></code></pre></div>
+<p><img src="handbook-07-slow-patterns_files/figure-html/unnamed-chunk-3-2.png" width="672" /></p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>bench<span class="op">::</span><span class="kw">mark</span>(</span>
+<span id="cb7-2"><a href="#cb7-2"></a>  <span class="dt">apply =</span> <span class="kw">apply</span>(data, <span class="dv">1</span>, mean),</span>
+<span id="cb7-3"><a href="#cb7-3"></a>  <span class="dt">rowMeans =</span> <span class="kw">rowMeans</span>(data)</span>
+<span id="cb7-4"><a href="#cb7-4"></a>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">plot</span>()</span></code></pre></div>
+<p><img src="handbook-07-slow-patterns_files/figure-html/unnamed-chunk-3-3.png" width="672" /></p>
+</div>
+<div id="sapply-vs-vapply" class="section level2">
+<h2>sapply() vs vapply()</h2>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>bench<span class="op">::</span><span class="kw">mark</span>(</span>
+<span id="cb8-2"><a href="#cb8-2"></a>  <span class="dt">sapply =</span> <span class="kw">sapply</span>(mtcars, sum),</span>
+<span id="cb8-3"><a href="#cb8-3"></a>  <span class="dt">vapply =</span> <span class="kw">vapply</span>(mtcars, sum, <span class="dt">FUN.VALUE =</span> <span class="kw">numeric</span>(<span class="dv">1</span>))</span>
+<span id="cb8-4"><a href="#cb8-4"></a>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">plot</span>()</span></code></pre></div>
+<p><img src="handbook-07-slow-patterns_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+</div>
+<div id="any-function" class="section level2">
+<h2>any() function</h2>
+<p>If you want to see if a vector contains a value, using <code>any(data == 10)</code> can be faster then <code>10 %in% data</code>. The speed will depend on the length of your vector and how frequent the value is.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>bench<span class="op">::</span><span class="kw">press</span>(</span>
+<span id="cb9-2"><a href="#cb9-2"></a>  <span class="dt">nval =</span> <span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">100</span>, <span class="dv">1000</span>),</span>
+<span id="cb9-3"><a href="#cb9-3"></a>  {</span>
+<span id="cb9-4"><a href="#cb9-4"></a>    data &lt;-<span class="st"> </span><span class="kw">rpois</span>(nval, <span class="dv">1</span>)</span>
+<span id="cb9-5"><a href="#cb9-5"></a>    bench<span class="op">::</span><span class="kw">mark</span>(</span>
+<span id="cb9-6"><a href="#cb9-6"></a>      <span class="st">`</span><span class="dt">%in%</span><span class="st">`</span> =<span class="st"> </span><span class="dv">5</span> <span class="op">%in%</span><span class="st"> </span>data,</span>
+<span id="cb9-7"><a href="#cb9-7"></a>      <span class="dt">any =</span> <span class="kw">any</span>(data <span class="op">==</span><span class="st"> </span><span class="dv">5</span>)</span>
+<span id="cb9-8"><a href="#cb9-8"></a>    )</span>
+<span id="cb9-9"><a href="#cb9-9"></a>  }</span>
+<span id="cb9-10"><a href="#cb9-10"></a>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">print</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">plot</span>()</span></code></pre></div>
+<pre><code>## Running with:
+##    nval</code></pre>
+<pre><code>## 1    10</code></pre>
+<pre><code>## 2   100</code></pre>
+<pre><code>## 3  1000</code></pre>
+<pre><code>## # A tibble: 6 x 14
+##   expression  nval      min   median `itr/sec` mem_alloc `gc/sec` n_itr  n_gc
+##   &lt;bch:expr&gt; &lt;dbl&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt;
+## 1 %in%          10    677ns    976ns   990022.        0B      0   10000     0
+## 2 any           10    315ns    410ns  2159278.        0B      0   10000     0
+## 3 %in%         100   1.03µs   1.37µs   604864.    1.27KB      0   10000     0
+## 4 any          100    695ns    767ns  1057243.      448B      0   10000     0
+## 5 %in%        1000      2µs   3.13µs   262296.   11.81KB      0   10000     0
+## 6 any         1000   2.56µs   3.21µs   290986.    3.95KB     29.1  9999     1
+## # … with 5 more variables: total_time &lt;bch:tm&gt;, result &lt;list&gt;, memory &lt;list&gt;,
+## #   time &lt;list&gt;, gc &lt;list&gt;</code></pre>
+<p><img src="handbook-07-slow-patterns_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+</div>
+<div id="cut-vs-findinterval" class="section level2">
+<h2>cut() vs findInterval()</h2>
+<p>Many times when you want to use <code>cut()</code>, to split a vector into bins, it will be faster to replace cut with findInterval as it does less work by not creating a factor.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>x &lt;-<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">10000</span>)</span>
+<span id="cb15-2"><a href="#cb15-2"></a>bench<span class="op">::</span><span class="kw">mark</span>(<span class="dt">check =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb15-3"><a href="#cb15-3"></a>  <span class="dt">cut =</span> <span class="kw">cut</span>(x, <span class="kw">c</span>(<span class="op">-</span><span class="ot">Inf</span>, <span class="dv">0</span>, <span class="ot">Inf</span>)),</span>
+<span id="cb15-4"><a href="#cb15-4"></a>  <span class="dt">findInterval =</span> <span class="kw">findInterval</span>(x, <span class="kw">c</span>(<span class="op">-</span><span class="ot">Inf</span>, <span class="dv">0</span>, <span class="ot">Inf</span>))</span>
+<span id="cb15-5"><a href="#cb15-5"></a>) <span class="op">%&gt;%</span><span class="st">  </span><span class="kw">print</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">plot</span>()</span></code></pre></div>
+<pre><code>## # A tibble: 2 x 13
+##   expression       min median `itr/sec` mem_alloc `gc/sec` n_itr  n_gc
+##   &lt;bch:expr&gt;   &lt;bch:t&gt; &lt;bch:&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt;
+## 1 cut          587.5µs  722µs     1375.   330.6KB     2.14   643     1
+## 2 findInterval  94.1µs  111µs     8752.    46.3KB     0     4375     0
+## # … with 5 more variables: total_time &lt;bch:tm&gt;, result &lt;list&gt;, memory &lt;list&gt;,
+## #   time &lt;list&gt;, gc &lt;list&gt;</code></pre>
+<p><img src="handbook-07-slow-patterns_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+</div>
+<div id="unlist" class="section level2">
+<h2>unlist()</h2>
+<p><code>unlist()</code> can be sped up by setting <code>use.names = FALSE</code>, this will stop the returned object from being names, saving time.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>bench<span class="op">::</span><span class="kw">mark</span>(<span class="dt">check =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb17-2"><a href="#cb17-2"></a>  <span class="st">`</span><span class="dt">use.names = TRUE</span><span class="st">`</span> =<span class="st"> </span><span class="kw">unlist</span>(mtcars),</span>
+<span id="cb17-3"><a href="#cb17-3"></a>  <span class="st">`</span><span class="dt">use.names = FALSE</span><span class="st">`</span> =<span class="st"> </span><span class="kw">unlist</span>(mtcars, <span class="dt">use.names =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb17-4"><a href="#cb17-4"></a>)</span></code></pre></div>
+<pre><code>## # A tibble: 2 x 6
+##   expression             min   median `itr/sec` mem_alloc `gc/sec`
+##   &lt;bch:expr&gt;        &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;
+## 1 use.names = TRUE   48.36µs   49.5µs    19106.    5.59KB      0  
+## 2 use.names = FALSE   2.18µs    2.9µs   310743.     2.8KB     31.1</code></pre>
+</div>
+<div id="cumulative-function-and-other-math-group-functions" class="section level2">
+<h2>cumulative function and other math group functions</h2>
+<p>If you have any mathematical calculations you need to have done, it is worth your time to check if they are implemented in R already <code>?Math</code>.</p>
+</div>
+<div id="how-many-times-does-y-appear-in-x" class="section level2">
+<h2>How many times does Y appear in X</h2>
+<p>Here we have some object which could be a vector, matrix, or array. we would like to know how many times the number 0 appears.</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a>x_vector &lt;-<span class="st"> </span><span class="kw">rpois</span>(<span class="dv">10000</span>, <span class="dv">1</span>)</span>
+<span id="cb19-2"><a href="#cb19-2"></a></span>
+<span id="cb19-3"><a href="#cb19-3"></a>bench<span class="op">::</span><span class="kw">mark</span>(</span>
+<span id="cb19-4"><a href="#cb19-4"></a>  <span class="dt">table =</span> <span class="kw">unname</span>(<span class="kw">table</span>(x_vector)[<span class="st">&quot;0&quot;</span>]),</span>
+<span id="cb19-5"><a href="#cb19-5"></a>  <span class="dt">sum =</span> <span class="kw">sum</span>(x_vector <span class="op">==</span><span class="st"> </span><span class="dv">0</span>)</span>
+<span id="cb19-6"><a href="#cb19-6"></a>)</span></code></pre></div>
+<pre><code>## # A tibble: 2 x 6
+##   expression      min   median `itr/sec` mem_alloc `gc/sec`
+##   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;
+## 1 table       539.2µs    786µs     1253.   682.9KB     2.60
+## 2 sum          30.5µs     35µs    26406.    39.1KB     2.64</code></pre>
+</div>
+<div id="table-vs-tabulate" class="section level2">
+<h2>table() vs tabulate()</h2>
+<p>If you need counts of integer-valued vectors, you will gain a big speedup by using the <code>tabulate()</code> function. Notice that <code>tabulate()</code> will ignore non-positive integers, so 0s would not be counted. tabulate will manually place the number of counts of 8 in the 8th place in its output.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a>x &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dv">1000</span>, <span class="ot">TRUE</span>)</span>
+<span id="cb21-2"><a href="#cb21-2"></a></span>
+<span id="cb21-3"><a href="#cb21-3"></a><span class="kw">table</span>(x)</span></code></pre></div>
+<pre><code>## x
+##   1   2   3   4   5   6   7   8   9  10 
+## 102  94 101 103 110 109 101  85  95 100</code></pre>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a><span class="kw">tabulate</span>(x)</span></code></pre></div>
+<pre><code>##  [1] 102  94 101 103 110 109 101  85  95 100</code></pre>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a>bench<span class="op">::</span><span class="kw">mark</span>(<span class="dt">check =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb25-2"><a href="#cb25-2"></a>  <span class="dt">table =</span> <span class="kw">table</span>(x),</span>
+<span id="cb25-3"><a href="#cb25-3"></a>  <span class="dt">tabulate =</span> <span class="kw">tabulate</span>(x)</span>
+<span id="cb25-4"><a href="#cb25-4"></a>)</span></code></pre></div>
+<pre><code>## # A tibble: 2 x 6
+##   expression      min   median `itr/sec` mem_alloc `gc/sec`
+##   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;
+## 1 table      118.67µs 147.22µs     6157.    63.3KB     4.53
+## 2 tabulate     3.81µs   4.87µs   202734.        0B    20.3</code></pre>
+</div>
+<div id="using-pipes" class="section level2">
+<h2>Using pipes</h2>
+<p>The use of the pipe operator <code>%&gt;%</code> can make your code more readable, but it will also result in (slightly) slower code. If speed is very important you might want to reconsider using pipes. This will be a trade-off between readability and speed.</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a><span class="kw">library</span>(magrittr)</span>
+<span id="cb27-2"><a href="#cb27-2"></a>x &lt;-<span class="st"> </span><span class="kw">rpois</span>(<span class="dv">1000</span>, <span class="dv">1</span>)</span>
+<span id="cb27-3"><a href="#cb27-3"></a></span>
+<span id="cb27-4"><a href="#cb27-4"></a>bench<span class="op">::</span><span class="kw">mark</span>(</span>
+<span id="cb27-5"><a href="#cb27-5"></a>  <span class="st">`</span><span class="dt">pipe</span><span class="st">`</span> =<span class="st"> </span>x <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">identity</span>(),</span>
+<span id="cb27-6"><a href="#cb27-6"></a>  <span class="st">`</span><span class="dt">no pipe</span><span class="st">`</span> =<span class="st"> </span><span class="kw">identity</span>(x)</span>
+<span id="cb27-7"><a href="#cb27-7"></a>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb27-8"><a href="#cb27-8"></a><span class="st">  </span><span class="kw">print</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb27-9"><a href="#cb27-9"></a><span class="st">  </span><span class="kw">plot</span>()</span></code></pre></div>
+<pre><code>## # A tibble: 2 x 13
+##   expression     min  median `itr/sec` mem_alloc `gc/sec` n_itr  n_gc total_time
+##   &lt;bch:expr&gt; &lt;bch:t&gt; &lt;bch:t&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt;   &lt;bch:tm&gt;
+## 1 pipe        47.1µs  60.7µs    15881.      280B     12.5  7645     6    481.4ms
+## 2 no pipe      267ns   358ns  2555856.        0B      0   10000     0     3.91ms
+## # … with 4 more variables: result &lt;list&gt;, memory &lt;list&gt;, time &lt;list&gt;, gc &lt;list&gt;</code></pre>
+<p><img src="handbook-07-slow-patterns_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+</div>
+<div id="summing-weights" class="section level2">
+<h2>Summing weights</h2>
+<p>If you need to calculate the Matrix cross product then it is usually faster to use <code>crossprod()</code> then use the <code>t(x) %*% y</code></p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1"></a>x &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">rnorm</span>(<span class="dv">1000</span>), <span class="dt">ncol =</span> <span class="dv">1</span>)</span>
+<span id="cb29-2"><a href="#cb29-2"></a>w &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">rnorm</span>(<span class="dv">10000</span>), <span class="dt">ncol =</span> <span class="dv">10</span>)</span>
+<span id="cb29-3"><a href="#cb29-3"></a></span>
+<span id="cb29-4"><a href="#cb29-4"></a>bench<span class="op">::</span><span class="kw">mark</span>(</span>
+<span id="cb29-5"><a href="#cb29-5"></a>  <span class="st">`</span><span class="dt">%*%</span><span class="st">`</span> =<span class="st"> </span><span class="kw">t</span>(x) <span class="op">%*%</span><span class="st"> </span>w,</span>
+<span id="cb29-6"><a href="#cb29-6"></a>  <span class="st">`</span><span class="dt">crossprod</span><span class="st">`</span> =<span class="st"> </span><span class="kw">crossprod</span>(x, w)</span>
+<span id="cb29-7"><a href="#cb29-7"></a>)</span></code></pre></div>
+<pre><code>## # A tibble: 2 x 6
+##   expression      min   median `itr/sec` mem_alloc `gc/sec`
+##   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;
+## 1 %*%          17.2µs   19.9µs    49105.    7.86KB        0
+## 2 crossprod    15.7µs     16µs    61108.    2.23KB        0</code></pre>
+</div>
+<div id="pmax-and-pmin" class="section level2">
+<h2>pmax() and pmin()</h2>
+<p>pmin is a nice shorthand, but you can gain some speed with some rewriting.</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1"></a>x &lt;-<span class="st"> </span><span class="kw">runif</span>(<span class="dv">1000</span>, <span class="fl">-0.5</span>)</span>
+<span id="cb31-2"><a href="#cb31-2"></a></span>
+<span id="cb31-3"><a href="#cb31-3"></a>bench<span class="op">::</span><span class="kw">mark</span>(</span>
+<span id="cb31-4"><a href="#cb31-4"></a>  <span class="dt">pmin =</span> <span class="kw">pmax</span>(x, <span class="dv">0</span>),</span>
+<span id="cb31-5"><a href="#cb31-5"></a>  <span class="dt">rewrite =</span> {</span>
+<span id="cb31-6"><a href="#cb31-6"></a>    i &lt;-<span class="st"> </span>x <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span></span>
+<span id="cb31-7"><a href="#cb31-7"></a>    x[i] &lt;-<span class="st"> </span><span class="dv">0</span></span>
+<span id="cb31-8"><a href="#cb31-8"></a>    x</span>
+<span id="cb31-9"><a href="#cb31-9"></a>  }</span>
+<span id="cb31-10"><a href="#cb31-10"></a>)</span></code></pre></div>
+<pre><code>## # A tibble: 2 x 6
+##   expression      min   median `itr/sec` mem_alloc `gc/sec`
+##   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;
+## 1 pmin         8.14µs  10.29µs    94007.    7.86KB     18.8
+## 2 rewrite      3.18µs   3.81µs   247932.   17.09KB      0</code></pre>
+</div>
+<div id="lm" class="section level2">
+<h2>lm()</h2>
+<p>If you are doing linear regression, and you already have the data as matrices you can benefit greatly from using the <code>.lm.fit()</code> function. This function will not do any checking for you. Just the calculations.</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1"></a>y &lt;-<span class="st"> </span>mtcars<span class="op">$</span>mpg</span>
+<span id="cb33-2"><a href="#cb33-2"></a></span>
+<span id="cb33-3"><a href="#cb33-3"></a>x &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(mtcars[, <span class="kw">c</span>(<span class="st">&quot;disp&quot;</span>, <span class="st">&quot;cyl&quot;</span>)])</span>
+<span id="cb33-4"><a href="#cb33-4"></a></span>
+<span id="cb33-5"><a href="#cb33-5"></a>bench<span class="op">::</span><span class="kw">mark</span>(<span class="dt">check =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb33-6"><a href="#cb33-6"></a>  <span class="dt">lm =</span> <span class="kw">lm</span>(mpg <span class="op">~</span><span class="st"> </span>disp <span class="op">+</span><span class="st"> </span>cyl <span class="op">-</span><span class="st"> </span><span class="dv">1</span>, mtcars),</span>
+<span id="cb33-7"><a href="#cb33-7"></a>  <span class="dt">.lm.fit =</span> <span class="kw">.lm.fit</span>(x, y)</span>
+<span id="cb33-8"><a href="#cb33-8"></a>)</span></code></pre></div>
+<pre><code>## # A tibble: 2 x 6
+##   expression      min   median `itr/sec` mem_alloc `gc/sec`
+##   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;
+## 1 lm         620.36µs 681.51µs     1417.    5.95KB     8.52
+## 2 .lm.fit      3.36µs   4.13µs   223973.    3.99KB    22.4</code></pre>
+</div>
+<div id="using-for-creating-sequences" class="section level2">
+<h2>using : for creating sequences</h2>
+<p>Creating a sequence from 1 to n.</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1"></a>n &lt;-<span class="st"> </span><span class="dv">100000</span></span>
+<span id="cb35-2"><a href="#cb35-2"></a></span>
+<span id="cb35-3"><a href="#cb35-3"></a>bench<span class="op">::</span><span class="kw">mark</span>(</span>
+<span id="cb35-4"><a href="#cb35-4"></a>  <span class="dt">seq =</span> <span class="kw">seq</span>(<span class="dv">1</span>, n),</span>
+<span id="cb35-5"><a href="#cb35-5"></a>  <span class="dt">seq.int =</span> <span class="kw">seq.int</span>(<span class="dv">1</span>, n),</span>
+<span id="cb35-6"><a href="#cb35-6"></a>  <span class="st">`</span><span class="dt">:</span><span class="st">`</span> =<span class="st"> </span><span class="dv">1</span><span class="op">:</span>n,</span>
+<span id="cb35-7"><a href="#cb35-7"></a>  <span class="dt">seq_len =</span> <span class="kw">seq_len</span>(n)</span>
+<span id="cb35-8"><a href="#cb35-8"></a>)</span></code></pre></div>
+<pre><code>## # A tibble: 4 x 6
+##   expression      min   median `itr/sec` mem_alloc `gc/sec`
+##   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;
+## 1 seq          4.95µs   6.24µs   152470.        0B     15.2
+## 2 seq.int       260ns    368ns  2558027.        0B      0  
+## 3 :             139ns    162ns  5382218.        0B      0  
+## 4 seq_len       118ns    143ns  6358099.        0B      0</code></pre>
+<p>Not only is <code>seq_len()</code> faster, but it is also safer as it works well when <code>n = 0</code>.</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1"></a><span class="dv">1</span><span class="op">:</span><span class="dv">0</span></span></code></pre></div>
+<pre><code>## [1] 1 0</code></pre>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1"></a><span class="kw">seq_len</span>(<span class="dv">0</span>)</span></code></pre></div>
+<pre><code>## integer(0)</code></pre>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

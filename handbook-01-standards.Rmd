@@ -1,0 +1,44 @@
+---
+title: "Coding Standards"
+output:
+  html_document:
+    theme: flatly
+    highlight: tango
+---
+
+This chapter will outline the standards we aim to adhere to. In addition to these standards will be some suggestions on best practices we hope you will find useful. 
+
+## General overview
+
+### Try to keep your code to less than 80 characters per line.
+
+This will improve visibility as the code will fit on your screen when you are working. If you are using Rstudio, you can add a visual marker on the 80 character line. Click Rstudio -> Preferences -> Code -> display -> Show margin.
+
+### document your code
+
+Explain yourself. Each function should have accompanying documentation explaining what it is doing. This will help other people understand what your code is doing without having to look at the code inside the function. Notice that "other people" also describes "future you".
+
+### Use white space for indenting, 2 characters
+
+even though white space doesn't affect the performance of your code is it good practice to properly indent your code. Consistent indentation also removes the ambiguity of what is happening in the code.
+
+If you want to quickly format messy you can use the [styler](https://github.com/r-lib/styler) package. It even comes with RStudio Addins for ease of use
+
+![](https://raw.githubusercontent.com/lorenzwalthert/some_raw_data/master/styler_0.1.gif)
+
+### When possible, structure your code as sections/files, with files holding similar functions and sections to give internal structure to your file.
+
+This is not going to increase the performance of your code. But you will very likely be more organized if you have 20 files with one function in each then having 1 file with 20 functions in it.
+Each file should have an informative name. A good idea for the name should be the name of the function it contains. This way you will be able to find it fast. This is not a hard-and-fast rule and you should try to group similar functions. The [prismatic](https://github.com/EmilHvitfeldt/prismatic) package is a good example of this principle. The [alpha.R](https://github.com/EmilHvitfeldt/prismatic/blob/master/R/alpha.R) file contains one function `clr_alpha()` that modifies the alpha value and the [saturate.R](https://github.com/EmilHvitfeldt/prismatic/blob/master/R/saturate.R) file contains the two functions `clr_saturate()` and `clr_desaturate()` since they both modify the saturation but in different directions. It makes sense that these functions are grouped.
+
+### Include an informative README in each project.
+
+Having a README file is often the first point of contact a new user has with a project. It should the necessary information for you to understand what the project is about. R packages commonly come with a README file, [xrnet](https://github.com/USCbiostats/xrnet) has the information you need to get going on a project including; what the project does, how to install it, examples, contribution guidelines and a note about Funding. READMEs are not only used in r packages but can be used for any type of project. The [penguins](https://github.com/allisonhorst/penguins) dataset comes with a nice README explaining the dataset.
+
+## Helpful suggestions
+
+Use an integrated development environment (IDE). We recommend https://www.rstudio.com/. Using an IDE is not about computing performance but human performance. It helps you get organizes and automate some of the tedious things away. RStudio follows a simple pane layout where your screen is split up. This allows you to write your code or text while having a separate non-overlapping help panel and terminal. RStudio also comes with plenty of [shortcuts](https://support.rstudio.com/hc/en-us/articles/200711853-Keyboard-Shortcuts) for commonly used tasks, [realtime spellchecking](https://blog.rstudio.com/2020/02/11/rstudio-1-3-preview-real-time-spellchecking/), background [job schedules](https://blog.rstudio.com/2019/03/14/rstudio-1-2-jobs/) and [more](https://blog.rstudio.com/categories/rstudio-ide).
+
+If you are looking for a coding style, then the [The tidyverse style guide](https://style.tidyverse.org/) is a good place to start.
+
+

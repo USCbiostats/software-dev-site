@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Profiling and benchmarking</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  background-color: #f8f8f8; }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #c4a000; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #000000; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #000000; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #000000; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h2 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h3 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h4 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h5 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h6 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">USC Software Dev</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Handbook
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="handbook-01-standards.html">Standards</a>
+    </li>
+    <li>
+      <a href="handbook-02-r_package.html">R packages</a>
+    </li>
+    <li>
+      <a href="handbook-03-parallel.html">Parallel</a>
+    </li>
+    <li>
+      <a href="handbook-04-testing.html">Testing</a>
+    </li>
+    <li>
+      <a href="handbook-05-profiling.html">Profiling</a>
+    </li>
+    <li>
+      <a href="handbook-06-hpc.html">High Performance Computing</a>
+    </li>
+    <li>
+      <a href="handbook-07-slow-patterns.html">Slow R patterns</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="bioghost-server.html">Bioghost Server</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Profiling and benchmarking</h1>
+
+</div>
+
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>This chapter will introduce the the concepts of profiling and benchmarking. These concepts are universal withing programming . This chapter will focus on its practical implementation and usage in the R programming language.</p>
+<p>The overall goal of these techniques is to measure the performance of the code you have written. Remember this is a measure of speed, not a measure of correctness.</p>
+</div>
+<div id="profiling" class="section level2">
+<h2>Profiling</h2>
+<p>Profiling is the act of measuring the run-time of each line of code you have run. Knowing where the time is being spend in your code is beneficial as it is a good indication of where you should spend your time optimizing. In general you want to look for small areas that take up most of the time (also called a “bottleneck”) and focus on those before other parts. There is little reason to spend time optimizing a piece of code that only take up 0.1% of the time when you could work at a piece that takes up 70% of the time.</p>
+<p>We will use the the <a href="https://rstudio.github.io/profvis/">profvis</a> package to do profiling. It have a couple of different ways of interacting. In the first one you load the <strong>profvis</strong> package and then you wrap the code you want to profile in <code>profvis({</code> and <code>})</code> as shown below show below.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(profvis)</span>
+<span id="cb1-2"><a href="#cb1-2"></a></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="kw">profvis</span>({</span>
+<span id="cb1-4"><a href="#cb1-4"></a>  data &lt;-<span class="st"> </span><span class="kw">runif</span>(<span class="fl">1e7</span>)</span>
+<span id="cb1-5"><a href="#cb1-5"></a>  <span class="co"># Three different ways of getting the square root</span></span>
+<span id="cb1-6"><a href="#cb1-6"></a>  square_root &lt;-<span class="st"> </span><span class="kw">sqrt</span>(data)</span>
+<span id="cb1-7"><a href="#cb1-7"></a>  square_root &lt;-<span class="st"> </span>data <span class="op">^</span><span class="st"> </span>(<span class="dv">1</span><span class="op">/</span><span class="dv">2</span>)</span>
+<span id="cb1-8"><a href="#cb1-8"></a>  square_root &lt;-<span class="st"> </span><span class="kw">exp</span>(<span class="dv">1</span>) <span class="op">^</span><span class="st"> </span>(<span class="dv">1</span><span class="op">/</span><span class="dv">2</span> <span class="op">*</span><span class="st"> </span><span class="kw">log</span>(data))</span>
+<span id="cb1-9"><a href="#cb1-9"></a>})</span></code></pre></div>
+<p>Another way if you are using the Rstudio IDE, comes from the navigation bar where you can access the profiling tool.</p>
+<div class="figure">
+<img src="screenshots/profiling-benchmark/navbar.png" alt="Profile location in Rstudio IDE navigation bar." width="100%" />
+<p class="caption">
+Profile location in Rstudio IDE navigation bar.
+</p>
+</div>
+<p>Clicking this tab reveals the following actions:</p>
+<ul>
+<li>“Profile selected line(s)”</li>
+<li>“Start profiling” &amp; “Stop profiling”</li>
+</ul>
+<div class="figure" style="text-align: center">
+<img src="screenshots/profiling-benchmark/profile-submenu.png" alt="Profiling actions." width="50%" />
+<p class="caption">
+Profiling actions.
+</p>
+</div>
+<p>Being able to profile selected lines of code is great if you have a short and compact piece of code that easily can be highlighted and tested.</p>
+<p>On the other hand is the ability start and stop the profiling whenever you want a powerful tool. In addition to being able to profile code from different areas, you are also able to stop profiling before the code is done executing, which you aren’t able to in the previous 2 methods. This is useful if you want to profile a snapshot of a long-running simulation as it can have very consistent behavior since it is running the same thing millions of time.</p>
+<p>No matter which of the three way you do your profile you will be presented with a page with a frame-graph</p>
+<div class="figure" style="text-align: center">
+<img src="screenshots/profiling-benchmark/flamegraph.png" alt="profvis output showing source on top and flame graph below." width="75%" />
+<p class="caption">
+profvis output showing source on top and flame graph below.
+</p>
+</div>
+<p>This interactive panel shows how much time and memory is being spend on each line of code. From here you should be able to identify Another useful view can be found by clicking on the “data” tab at the top. This shows how long time is being spend in each expression. We can see in this example that the power operator <code>^</code> is taking the majority of the time.</p>
+<div class="figure" style="text-align: center">
+<img src="screenshots/profiling-benchmark/dataview.png" alt="profvis data view showcases results by expresion in stead of by line." width="75%" />
+<p class="caption">
+profvis data view showcases results by expresion in stead of by line.
+</p>
+</div>
+<div id="troubleshooting" class="section level3">
+<h3>Troubleshooting</h3>
+<p>Sometimes when you are using <strong>profvis</strong> you will see the error</p>
+<pre><code>Error in parse_rprof(prof_output, expr_source) : 
+  No parsing data available. Maybe your function was too fast?</code></pre>
+<p>This is because your code finished running before profvis was able to detect it. This might feel like good news, but it can make it difficult to profile very fast functions. To profile a fast function you simply let it run a lot of times. This can easily be done by putting it inside a for-loop. You change this</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">profvis</span>({</span>
+<span id="cb3-2"><a href="#cb3-2"></a>  data &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">3</span>, <span class="dv">7</span>, <span class="dv">2</span>)</span>
+<span id="cb3-3"><a href="#cb3-3"></a></span>
+<span id="cb3-4"><a href="#cb3-4"></a>  <span class="kw">super_fast_function</span>(data)</span>
+<span id="cb3-5"><a href="#cb3-5"></a>})</span></code></pre></div>
+<p>to</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">profvis</span>({</span>
+<span id="cb4-2"><a href="#cb4-2"></a>  data &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">3</span>, <span class="dv">7</span>, <span class="dv">2</span>)</span>
+<span id="cb4-3"><a href="#cb4-3"></a></span>
+<span id="cb4-4"><a href="#cb4-4"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">1000</span>) {</span>
+<span id="cb4-5"><a href="#cb4-5"></a>    <span class="kw">super_fast_function</span>(data)</span>
+<span id="cb4-6"><a href="#cb4-6"></a>  }</span>
+<span id="cb4-7"><a href="#cb4-7"></a>})</span></code></pre></div>
+<p>where you increase the number until it is run enough for the profiler to catch it.</p>
+</div>
+</div>
+<div id="benchmarking" class="section level2">
+<h2>Benchmarking</h2>
+<p>Measuring how long something takes is a simple skill that will become invaluable once you start to focus on making your code faster. Simply put, if you can’t measure how fast something is you don’t know if it is going any faster. This section will be broken into 2 sections</p>
+<ul>
+<li>benchmarking slow code and,</li>
+<li>benchmarking fast code.</li>
+</ul>
+<p>In this content slow is something that takes seconds, minutes, hours or more. It is a situation where you could use a conventional stopwatch. Fast is anything faster, it is used in the context where you have two pieces of code you think does the same and you want to find out which one is faster.</p>
+<div id="slow-code" class="section level3">
+<h3>Slow code</h3>
+<p>First we need to create a function to benchmark, here we will use this simple recursive formula for the fibonacci sequence. This function doesn’t scale well with <code>n</code> so it will be perfect for these examples.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>fibonacci &lt;-<span class="st"> </span><span class="cf">function</span>(n) {</span>
+<span id="cb5-2"><a href="#cb5-2"></a>  <span class="cf">if</span>(n <span class="op">==</span><span class="st"> </span><span class="dv">0</span>) {</span>
+<span id="cb5-3"><a href="#cb5-3"></a>    <span class="kw">return</span>(<span class="dv">0</span>)</span>
+<span id="cb5-4"><a href="#cb5-4"></a>  }</span>
+<span id="cb5-5"><a href="#cb5-5"></a>  <span class="cf">if</span>(n <span class="op">==</span><span class="st"> </span><span class="dv">1</span>) {</span>
+<span id="cb5-6"><a href="#cb5-6"></a>    <span class="kw">return</span>(<span class="dv">1</span>)</span>
+<span id="cb5-7"><a href="#cb5-7"></a>  }</span>
+<span id="cb5-8"><a href="#cb5-8"></a>  <span class="kw">fibonacci</span>(n <span class="op">-</span><span class="st"> </span><span class="dv">1</span>) <span class="op">+</span><span class="st"> </span><span class="kw">fibonacci</span>(n <span class="op">-</span><span class="st"> </span><span class="dv">2</span>)</span>
+<span id="cb5-9"><a href="#cb5-9"></a>}</span></code></pre></div>
+<p>Using <code>system.time()</code> is classic way to measure how long something takes, simple wrap the code you want to time between <code>system.time({</code> and <code>})</code>.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw">system.time</span>({</span>
+<span id="cb6-2"><a href="#cb6-2"></a>  <span class="kw">fibonacci</span>(<span class="dv">32</span>)</span>
+<span id="cb6-3"><a href="#cb6-3"></a>  })</span></code></pre></div>
+<pre><code>##    user  system elapsed 
+##   2.912   0.016   2.933</code></pre>
+<p>The first two numbers are the are the total user and system CPU times of the current R process and any child processes on which it has waited, and the third entry is the ‘real’ elapsed time since the process was started. An alternative with the same functionality from the <a href="http://bench.r-lib.org">bench</a> package is the function <code>system_time()</code>.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="kw">library</span>(bench)</span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="kw">system_time</span>({</span>
+<span id="cb8-3"><a href="#cb8-3"></a>  <span class="kw">fibonacci</span>(<span class="dv">32</span>)</span>
+<span id="cb8-4"><a href="#cb8-4"></a>  })</span></code></pre></div>
+<pre><code>## process    real 
+##    2.7s    2.7s</code></pre>
+<p>where the two values are</p>
+<ul>
+<li>process - The process CPU usage of the expression evaluation.</li>
+<li>real - The wall clock time of the expression evaluation.</li>
+</ul>
+<p>Another great tool is the <a href="http://collectivemedia.github.io/tictoc/">tictoc</a> package. Simply call <code>tic()</code> when to start recording and <code>toc()</code> to end recording.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="kw">library</span>(tictoc)</span>
+<span id="cb10-2"><a href="#cb10-2"></a><span class="kw">tic</span>()</span>
+<span id="cb10-3"><a href="#cb10-3"></a>x &lt;-<span class="st"> </span><span class="kw">fibonacci</span>(<span class="dv">32</span>)</span>
+<span id="cb10-4"><a href="#cb10-4"></a><span class="kw">toc</span>()</span></code></pre></div>
+<pre><code>## 3.064 sec elapsed</code></pre>
+<p>In addition does this package extend the timing functionality in such a way that we are able to measure times in nested context. In the following example we are generating some data and fitting a model. Calling <code>tic()</code> another time before the <code>toc()</code> allows us to measure subsections of the whole.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="kw">library</span>(tictoc)</span>
+<span id="cb12-2"><a href="#cb12-2"></a><span class="kw">tic</span>(<span class="st">&quot;Total&quot;</span>)</span>
+<span id="cb12-3"><a href="#cb12-3"></a> <span class="kw">tic</span>(<span class="st">&quot;Data Generation&quot;</span>)</span>
+<span id="cb12-4"><a href="#cb12-4"></a> X &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">rnorm</span>(<span class="dv">5000</span> <span class="op">*</span><span class="st"> </span><span class="dv">1000</span>), <span class="dv">5000</span>, <span class="dv">1000</span>)</span>
+<span id="cb12-5"><a href="#cb12-5"></a> b &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">1000</span>, <span class="dv">1000</span>)</span>
+<span id="cb12-6"><a href="#cb12-6"></a> y &lt;-<span class="st"> </span><span class="kw">runif</span>(<span class="dv">1</span>) <span class="op">+</span><span class="st"> </span>X <span class="op">%*%</span><span class="st"> </span>b <span class="op">+</span><span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">5000</span>)</span>
+<span id="cb12-7"><a href="#cb12-7"></a> <span class="kw">toc</span>()</span>
+<span id="cb12-8"><a href="#cb12-8"></a> </span>
+<span id="cb12-9"><a href="#cb12-9"></a> <span class="kw">tic</span>(<span class="st">&quot;Model Fitting&quot;</span>)</span>
+<span id="cb12-10"><a href="#cb12-10"></a> model &lt;-<span class="st"> </span><span class="kw">lm</span>(y <span class="op">~</span><span class="st"> </span>X)</span>
+<span id="cb12-11"><a href="#cb12-11"></a> <span class="kw">toc</span>()</span>
+<span id="cb12-12"><a href="#cb12-12"></a><span class="kw">toc</span>()</span></code></pre></div>
+<pre><code>## Data Generation: 0.388 sec elapsed
+## Model Fitting: 4.44 sec elapsed
+## Total: 4.831 sec elapsed</code></pre>
+<p>This can be useful if you want to be able to time the overall script as well as parts of it. Notice how each timing is named.</p>
+</div>
+<div id="fast-code---microbenchmarking" class="section level3">
+<h3>Fast code - microbenchmarking</h3>
+<p>Here we will look at the what happens when we want to compare two expressions to see which one is faster. We will use the <strong>bench</strong> package again. Suppose we would like to determine the fastest way of calculating the variance of a selection of numbers. We use the <code>mark()</code> function from the <strong>bench</strong> and insert 2 or more expressions we would like to test against each other. These expressions are then run a lot of times and the summary statistics of the times are given as a result.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="kw">library</span>(bench)</span>
+<span id="cb14-2"><a href="#cb14-2"></a>x &lt;-<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">1000</span>)</span>
+<span id="cb14-3"><a href="#cb14-3"></a></span>
+<span id="cb14-4"><a href="#cb14-4"></a>bench<span class="op">::</span><span class="kw">mark</span>(</span>
+<span id="cb14-5"><a href="#cb14-5"></a>  <span class="kw">var</span>(x),</span>
+<span id="cb14-6"><a href="#cb14-6"></a>  <span class="kw">cov</span>(x, x)</span>
+<span id="cb14-7"><a href="#cb14-7"></a>)</span></code></pre></div>
+<pre><code>## # A tibble: 2 x 6
+##   expression      min   median `itr/sec` mem_alloc `gc/sec`
+##   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;
+## 1 var(x)        9.8µs   12.2µs    78680.    13.7KB     15.7
+## 2 cov(x, x)    20.2µs   24.6µs    39779.    47.5KB     19.9</code></pre>
+<p><code>mark()</code> also checks that all the expressions return the same output as a sanity check. Notice the units</p>
+<ul>
+<li>1 ms, then one thousand calls takes a second.</li>
+<li>1 µs, then one million calls takes a second.</li>
+<li>1 ns, then one billion calls takes a second.</li>
+</ul>
+</div>
+</div>
+<div id="additional-resources" class="section level2">
+<h2>Additional resources</h2>
+<p><a href="https://adv-r.hadley.nz/perf-measure.html" class="uri">https://adv-r.hadley.nz/perf-measure.html</a><br />
+Chapter on “Measuring performance” from Advanced R by Hadley Wickham. Covers more or less the same topics as this chapter but with more examples and greater details, great next step for reading.</p>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

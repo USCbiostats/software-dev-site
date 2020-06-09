@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>High Performance Computing</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  background-color: #f8f8f8; }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #c4a000; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #000000; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #000000; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #000000; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h2 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h3 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h4 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h5 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h6 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">USC Software Dev</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Handbook
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="handbook-01-standards.html">Standards</a>
+    </li>
+    <li>
+      <a href="handbook-02-r_package.html">R packages</a>
+    </li>
+    <li>
+      <a href="handbook-03-parallel.html">Parallel</a>
+    </li>
+    <li>
+      <a href="handbook-04-testing.html">Testing</a>
+    </li>
+    <li>
+      <a href="handbook-05-profiling.html">Profiling</a>
+    </li>
+    <li>
+      <a href="handbook-06-hpc.html">High Performance Computing</a>
+    </li>
+    <li>
+      <a href="handbook-07-slow-patterns.html">Slow R patterns</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="bioghost-server.html">Bioghost Server</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">High Performance Computing</h1>
+
+</div>
+
+
+<div id="first-step-get-an-account" class="section level2">
+<h2>First step: get an account</h2>
+<p>USC’s High-performance-computing center (HPCC) offers accounts free of charge to all members of the community. The application process is only and simple, you just need to provide information about you, what are your plans for using HPC and some idea of how much space you are planning to use (which can be very generous).</p>
+<p>To apply for a new account, you can follow the instructions <a href="https://hpcc.usc.edu/support/accounts/applying-for-a-hpcc-account/">here</a>. Once you get your account approved, you can contact us to request access to Biostats’ shared space (we have a ton).</p>
+<p>Some important points to consider while using HPC in R</p>
+</div>
+<div id="keep-yor-library-organized" class="section level2">
+<h2>Keep yor library organized</h2>
+<p>In a lot of setups the “Desk” space available (a.k.a. home) in HPC clusters is rather small. In such cases it makes sense to keep permanent files elsewhere. This applies directly to the R library (where R packages live).</p>
+<p><strong>The simple tip is</strong> Keep all your good stuff in a folder where you have a large storage (rather permanent) space, and create a symbolic link to it at home. Here is an example setup:</p>
+<pre class="shell"><code>$ cd /where/i/have/space/
+$ mkdir Rlibs
+$ cd ~
+$ ln -s R /where/i/have/space/Rlibs</code></pre>
+<p>This way, whenever you install an R package, by default it will be installed in your <code>/where/i/have/space/Rlibs</code> folder, but it is easy to access from any R session sin R will check (by default) your home directory for an <code>R</code> folder.</p>
+<p>In the particular case of USC, home directories (not to be confounded with project directories) are rather small, 1GB last time I checked, which makes sense as you shouldn’t be using the home directory for storage but for script submission.</p>
+</div>
+<div id="dont-hijack-nodes" class="section level2">
+<h2>Don’t hijack nodes</h2>
+<p>A lot of times people tend to request resources by the node, which is a terrible (not very nice) practice. Instead of specifying how many nodes you want to use, tell the job-scheduler how many tasks (or cores) you request.</p>
+<p>In the case of Slurm, we can use the following setup:</p>
+<pre class="shell"><code>#SBATCH ntasks=1
+#SBATCH cpus-per-task=10</code></pre>
+<p>The previous code is advising<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> Slurm to allocate 10 cores for the job to be submitted. Another way to be more efficient is using Arrays, e.g.</p>
+<pre class="shell"><code>#SBATCH array=1-10
+#SBATCH ntasks=1
+#SBATCH cpus-per-task=4</code></pre>
+<p>This code tells Slurm that this job should be repeated 10 times with the same setup (10 jobs each with a single task, but each task using 4 processors, i.e. 40 cores). The key is in the environment variable <code>SLURM_ARRAY_TASK_ID</code> which will take values 1 through 10 at each job, so the user can specify what to do in each one of the jobs, for example, in R:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>ARRAY_ID &lt;-<span class="st"> </span><span class="kw">Sys.getenv</span>(<span class="st">&quot;SLURM_ARRAY_TASK_ID&quot;</span>)</span>
+<span id="cb4-2"><a href="#cb4-2"></a>dat &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="kw">sprintf</span>(<span class="st">&quot;path/to/a/file/file-number-%d.rds&quot;</span>, ARRAY_ID))</span></code></pre></div>
+</div>
+<div id="keep-tempfiles-where-they-belong" class="section level2">
+<h2>Keep tempfiles where they belong</h2>
+<p>TL;DR use the stagging or tmp filesystems in your cluster to store temporal files. Only files that will be used for analysis (results) should be stored in project space.</p>
+<p>This means that any by-product like log files, auxiliar files, etc. should be kept in those places</p>
+</div>
+<div id="use-links-and-not-hard-copies-of-large-data" class="section level2">
+<h2>Use links and not hard copies of large data</h2>
+<p>A very common and bad practice is to keep copies of large files duplicated accross projects. A good practice is to have symbolic links to whatever large data set you are planning to use instead. For example, suppose that we have the following file</p>
+<pre class="shell"><code>/path/to/a/very/large/big-dataset.csv</code></pre>
+<p>Instead of creating a copy in your project directory, you should consider doing the following instead:</p>
+<pre class="shell"><code>$ mkdir data-raw
+$ cd data-raw
+$ ln -s big-dataset.csv /path/to/a/very/large/big-dataset.csv</code></pre>
+<p>System managers (and your future self), will appreciate it.</p>
+</div>
+<div id="be-mindful-about-special-configs-for-r-packages" class="section level2">
+<h2>Be mindful about special configs for R packages</h2>
+<p>Some times R packages installed from source have flags that can cause your code to blow in a HPC cluster setting. One recent example of this is the R package <code>rstan</code>. In this case, some flags passed to the compiler made the package to fine-tune the compilation to the current machine, which causes problems when your cluster is actually heterogenous in terms of nodes setup.</p>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>In Slurm, setting the number of cores or memory required for a particular job is actually an advice since the job-scheduler will try to allocate your job in a set of nodes (or single node) that hopefully goes along with the requirement. There are ways to be more strict about some of these, but is not recomended to follow that path.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

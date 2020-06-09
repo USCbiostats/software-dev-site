@@ -1,0 +1,295 @@
+---
+title: "Building a R package"
+output:
+  html_document:
+    theme: flatly
+    highlight: tango
+---
+
+## Motivation
+
+This chapter will show you how to create a R package with varying number of additions. From a simple minimal package for personal use to a fully-fleshed package.
+
+Creating a R package is not only done for publication. It also helps you stay organizes, save yourself time while still letting you share your code with other people. Learning what goes into creating a package can be a mouthful at first but the conventions and rules revolving around packages makes the creation easy.
+
+## Preparation
+
+To get started it would be preferable for you to have git installed on your machine and have a  Github account. https://happygitwithr.com/ provides a brilliant and thorough walk-through of using git/Github with R.
+
+In addition to git, you will also need the following packages
+
+```{r, eval=FALSE}
+install.packages(c("devtools", "roxygen2", "testthat", "knitr"))
+```
+
+If you are planning on using compiled code you will need to install the following depending on your operating system:
+
+On Windows, download and install [Rtools](https://cran.r-project.org/bin/windows/Rtools/).
+On Mac, download and install XCode (available for free in the App Store) or the [Command Line Tools for Xcode](http://developer.apple.com/downloads).  
+On Linux, download and install the R development tools.  
+
+### Naming your R package
+
+When creating a package you need to give it at name. The name
+
+- can only consist of letters, numbers and periods
+- must start with a letter, and 
+- cannot end with a period
+
+Furthermore we recommend that you don't use periods and stick with letters as much as possible. You need a unique name, mainly because of the fact that if you plan on getting your package on CRAN or bioconductor you can't overlap with any of their names. A easy check for can be done using the [available package](https://github.com/ropenscilabs/available). **available** also checks across acronyms, slang and other meanings that you might have missed. Secondly try to pick a name that is googleable.
+
+### Checking
+
+How that you are a R developer you will benefit from using the essential tool `R CMD check`. `R CMD check` check your package for common problems and reports them back to you. Using this early and often stops you from having to deal with ingrown problems. You can run `R CMD check` by typing the code `devtools::check()` or with the shortcut Ctrl/Cmd + Shift + E in RStudio. A common workflow is
+
+- Run `R CMD check`
+- If there is a problem fix one of them
+- Repeat until you don't have any errors
+
+More information about individual checks can be found [here](https://r-pkgs.org/check.html#check-checks).
+
+Further reading:  
+
+- https://r-pkgs.org/check
+
+## Minimal R Package
+
+Creating a package can easily be done using the **usethis** package, all you need is to provide a path to the directory you want the package to be created in.
+
+```{r, eval=FALSE}
+create_package("~/path/to/packagename")
+```
+
+If you are using Rstudio you should already be transported to a project at the specified location with the following content
+
+![](screenshots/r-packages/minimal-package.png)
+
+For now we will focus on the `/R` folder and the `DESCRIPTION` files as the remaining files/folders should be automatically modified if we use **usethis**.  
+
+The `DESCRIPTION` is our first stop. You should make yourself the author,
+
+```{}
+Authors@R: 
+    person("given name", "family name", role = c("aut", "cre"), "contact@mail.com")
+```
+
+The roles `aut` and `cre` stand for author and creator respectively. For persons with an ORCID identifier (see https://orcid.org/, you can provide the identifier as part of the comment argument of `person()`
+
+```{}
+person(""given name", "family name", comment = c(ORCID = "0000-1111-2222-3333"))
+```
+
+More details regarding use of roles can be found [here](https://r-pkgs.org/description.html#author). 
+
+Next you need to fill in the `Title` and `Description` fields. The `Title` should be a short and simple description of the package. Must be plain text, title-case (This Sentence Is Title Case), not end in a period and should preferable be less then 65 characters. The `Description` fields is the more detailed version of the `Title` field. It should span multiple lines, each indented 4 spaces (first excluded) and being less then 80 characters long. This is a fairly limited space so further details should be included in the readme.  
+
+The package created here doesn't provide anything in terms of functions or data. Adding these objects will be the subject of the next section.  
+
+## Additional Components
+
+This section will introduce various components you can include in your package to improve its functionality and usability. 
+
+### R code `R/`
+
+The meat of a package will generally come from the functions it provides (exceptions are data packages which just contain data, the [gapminder]( https://CRAN.R-project.org/package=gapminder) is a notable example of this). All your functions should be includes inside the `R/` folder in `.R` scripts. While there are no hard rules regarding the organization of functions, it is generally advised to divide the functions among multiple `.R` scripts for better organization. Likewise will naming the scripts not improve the run time and efficiency of your code but will make it easier to navigate.  
+
+A `.R` script can be created manually and saved in the `R/` folder, or you can use the `use_r()` function from **usethis**. Suppose we are adding a function to cluster some data according to the k-means clustering, an appropriate name of the `.R` script could be `kmeans`.
+
+```{r, eval=FALSE}
+use_r("kmeans")
+```
+
+This will create a file called `kmeans.R` in the `R/` folder. To make the functions usable you must export them, this will be covers in the next subsection [Documentation](#documentation).  
+
+Further reading:  
+
+- https://r-pkgs.org/r
+
+### Documentation
+
+Documentation is perhaps the single most important part of a package, without it, new users would not be able to use your otherwise excellent package. the documentation in a r package is stored in the `man/` folder, but you should never modify these files by hand. You should use [roxygen2](https://cran.r-project.org/web/packages/roxygen2/vignettes/roxygen2.html) to document your code in the `.R` scripts. roxygen2 comments looks like this
+
+```{r, eval=FALSE}
+#' Adds 1 to a number.
+#' 
+#' This function is vectorized so it allows vectors of any length as input.
+#' 
+#' @param x A number.
+#' @return 1 plus the value of \code{x}.
+#' @export
+#' @examples
+#' addone(pi)
+#' addone(1:10)
+addone <- function(x) {
+  x + 1
+}
+```
+
+Notice how each like line begins with `#'` this is the indication that is is a **roxygen2** comment to be used for documentation.  A basic function documentation comes with 6 parts:
+
+1. The "title" is first line of a roxygen2 comment block. This becomes the headline. This should be kept brief and concise. 
+2. The following paragraphs is the description and details. The first paragraph will become the description (to appear right after the title) and the remaining paragraphs will become details to appear latter on the documentation page.
+3. Argument documentation. There should be a `@param` tag for each argument in the function noting the name of the argument and its use.
+4. The expected outcome. The `@return` should be followed by a brief explanation of the type of output the function will provide.
+5. Declaration of exportation. If you want the function to be used by the user you must include the `@export` tag in the roxygen2 comments.
+6. Examples. Write various examples following the `@examples` tag. these examples should be fairly small and run fast.
+
+for information on proper use and additional tags please refer to the links in further reading. To quickly provide a roxygen2 skeleton do Code > Insert roxygen skeleton in Rstudio while having the function selected.
+
+once you have written the documentation as roxygen2 comments you need to turn it into `.Rd` files which should be located in the `man/` folder. This is done by running roxygen.
+
+There are three main ways to run roxygen:
+
+roxygen2::roxygenise(), or
+
+devtools::document(), if you’re using devtools, or
+
+Ctrl/Cmd + Shift + D, if you’re using RStudio.
+
+Further reading:  
+
+- https://r-pkgs.org/man
+- https://cran.r-project.org/doc/manuals/R-exts.html#Rd-format
+- https://ropensci.github.io/dev_guide/building.html#documentation
+
+### Dependencies
+
+One of the jobs of the `DESCRIPTION` file is to denote that other packages are needed for your package to run. Generally you will only need to use 3 of the tags. `Imports`, `Suggests` and `LinkingTo`.
+
+- Imports are packages that your package to work.
+- Suggests are packages that your package can use but doesn't
+need.
+- LinkingTo packages listed here rely on C or C++ code in another package.
+
+Both Imports and Suggests fields can be changed using the **usethis** function `use_package()`
+
+```{r, eval=FALSE}
+# Sets dplyr as 'Imports'
+use_package("dplyr", type = "Imports")
+
+# Sets dplyr as 'Suggests'
+use_package("dplyr", type = "Suggests")
+```
+
+Once this have been done you should refer to the functions with the `::` operator in the style `package::function`. As an example, lets say we want to calculate the procentage of a data.frame is composed of distinct rows. Here it can be advantageous to leverage the `distinct()` function from the **dplyr** package. We will start by calling `use_package("dplyr", type = "Imports")` to make sure that **dplyr** is specified in the `DESCRIPTION` file, next we can use the `distinct()` function by prefixing it with `dplyr::`.
+
+```{r, eval=FALSE}
+distinct_procentage <- function(df) {
+  df_distinct <- dplyr::distinct(df)
+  
+  full_n <- nrow(df)
+  distinct_n <- nrow(df_distinct)
+  
+  distinct_n / full_n
+}
+```
+
+The `LinkingTo` field will automatically filled when you are to use C or C++, this will be covered in the section on [Compiled code](#compiledcode).
+
+Further reading:  
+
+- https://r-pkgs.org/description.html#dependencies
+- https://ropensci.github.io/dev_guide/building.html#package-dependencies
+- http://dirk.eddelbuettel.com/blog/2019/03/14/#020_dependency_badges
+
+### License
+
+The `License` field in the `DESCRIPTION` file is telling you what kind of license applies to the code in the package. We will not cover the difference between the different licenses in the book and will refer readers to https://r-pkgs.org/description.html#license as a starting point and the further reading section for further reading. In general you will end with one of the 3 licenses `MIT`, `GPL-3` or `CC0`. Once you have decided on your license you simple use the corresponding **usethis** function to handle the rest.
+
+```{r, eval=FALSE}
+use_mit_license("My Name")
+use_gpl3_license("My Name")
+use_cc0_license("My Name")
+```
+
+Further reading:  
+
+- https://r-pkgs.org/description.html#license
+- https://cran.r-project.org/doc/manuals/R-exts.html#Licensing
+- https://blog.codinghorror.com/pick-a-license-any-license/
+- https://choosealicense.com/licenses/
+- https://tldrlegal.com/
+
+### README {#readme}
+
+The readme acts as a main page for your package. This will be the first thing a user will see if your package is only on github. It is still relevant once you get the package on CRAN but less so as more users will go through the CRAN page instead.
+
+The readme file is created using the **usethis** package
+
+Further reading:
+
+- https://ropensci.github.io/dev_guide/building.html#readme
+
+### Tests
+
+Once you start writing functions you want to make sure that they work the way you expect them to work. More importantly you would like for them to continue working as you adjust them. This is where testing comes in. You write an expression using your function, you then write what you expect the expression to do and compare. If those two things are the same the test have passed.  
+
+To do testing in R we recommend you use a framework such as [testthat](https://testthat.r-lib.org/).  
+
+A thorough guide of testing is done can be found in the [testing chapter](#testing). 
+
+Further reading:  
+
+- https://r-pkgs.org/tests.html
+- https://ropensci.github.io/dev_guide/building.html#testing
+
+### Data
+
+You might want to a a small example data set to showcase how your package works. If you have the script that creates the data, start by calling the `use_data_raw()` function from the __usethis__ package. This will create a folder in which you should include the script that created the data.  
+
+Once you have your data use the `use_data()` function on the data object and **usethis** will take care of the rest.
+
+Further reading:  
+
+- https://r-pkgs.org/data.html#data
+
+### Compiled code {#compiledcode}
+
+### vignettes
+
+Vignettes are a large scale example. Use it to explain the workflow of your package. Remember that the reader don't know the package as well as you do. Describe the problem(s) your package is trying to solve and show how it is used to solve it. Adding a vignette is done by using the `use_vignette()` function from the __usethis__ package like so
+
+```{r, eval=FALSE}
+use_vignette("Name of my vignette")
+```
+
+This will create a skeleton vignette that you can fill out.
+
+Further reading:  
+
+- https://r-pkgs.org/vignettes.html
+
+## General Overview
+
+Unfolding the "Software Thinking", once you have set up the project (whereas an R package, C/C++ library, etc.), the development workflow is an iterative process. For each `fun` in `functions` do:
+    
+1.  Write down the function
+2.  Document the function: Input/output, examples, and references.
+3.  Write down the tests
+4.  Build (compile) the package
+5.  Run the tests and make sure `fun` didn't break anything.
+6.  Update the `news.md` and `ChangeLog` files (that sounds like a good idea)
+
+## Resources
+
+Usethis package  
+https://usethis.r-lib.org/
+
+Cran documentation  
+https://cran.r-project.org/doc/manuals/R-exts.html
+
+R Packages  
+https://r-pkgs.org/
+
+https://www.hvitfeldt.me/blog/usethis-workflow-for-package-development/
+
+You can make a package in 20 minutes - Rstudio Conf Talk by Jim Hester  
+https://www.rstudio.com/resources/videos/you-can-make-a-package-in-20-minutes/
+
+https://hilaryparker.com/2014/04/29/writing-an-r-package-from-scratch/
+
+https://cran.r-project.org/doc/manuals/r-release/R-exts.html
+
+https://ropensci.github.io/dev_guide/
+
+https://ropensci.org/blog/2018/03/16/thanking-reviewers-in-metadata/
