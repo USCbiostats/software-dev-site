@@ -1,0 +1,15 @@
+---
+title: "Introduction"
+output:
+  html_document:
+    theme: flatly
+    highlight: tango
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache = TRUE)
+```
+
+Welcome to the USC Biostats R Handbook. These chapters serves as a catalog of information that we find valuable for students, staff and faculty to know about if they are writing R code and packages.

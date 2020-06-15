@@ -7,6 +7,8 @@ navbar:
       href: index.html
     - text: "Handbook"
       menu:
+        - text: "Introduction"
+          href: handbook-00-introduction.html
         - text: "1: Standards"
           href: handbook-01-standards.html
         - text: "2: R packages"
