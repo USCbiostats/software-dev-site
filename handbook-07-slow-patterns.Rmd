@@ -16,6 +16,7 @@ knitr::opts_chunk$set(cache = TRUE)
 library(magrittr)
 library(ggplot2)
 theme_set(theme_minimal())
+set.seed(1234)
 ```
 
 This document serves as a starting point for code optimizations. It includes possible optimization strategies.
