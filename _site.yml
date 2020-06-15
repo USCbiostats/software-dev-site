@@ -7,19 +7,19 @@ navbar:
       href: index.html
     - text: "Handbook"
       menu:
-        - text: "Standards"
+        - text: "1: Standards"
           href: handbook-01-standards.html
-        - text: "R packages"
+        - text: "2: R packages"
           href: handbook-02-r_package.html
-        - text: "Parallel"
+        - text: "3: Parallel"
           href: handbook-03-parallel.html
-        - text: "Testing"
+        - text: "4: Testing"
           href: handbook-04-testing.html
-        - text: "Profiling"
+        - text: "5: Profiling"
           href: handbook-05-profiling.html
-        - text: "High Performance Computing"
+        - text: "6: High Performance Computing"
           href: handbook-06-hpc.html
-        - text: "Slow R patterns"
+        - text: "7: Slow R patterns"
           href: handbook-07-slow-patterns.html
     - text: "Bioghost Server"
       href: bioghost-server.html
