@@ -475,19 +475,19 @@ div.tocify {
 </div>
 
 
-<p>Before starting, be advice that this chapter is in continuous work-in-progress mode, which translates in potential changes in the ordering of the sections, availability of contents, etc.</p>
+<p>Before starting, be advised that this chapter is in continuous work-in-progress mode, which translates into potential changes in the ordering of the sections, availability of contents, etc.</p>
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
-<p>In this chapter we will introduce the reader to parallel computing using R. In particular, we will take a general overview on what is parallel computing, how can it benefit us, and how can it be used in R.</p>
+<p>In this chapter we will introduce the reader to parallel computing using R. In particular, we will take a general overview of what is parallel computing, how can it benefit us, and how can it be used in R.</p>
 <p>The rest of this chapter develops under the assumption that the reader has some level of knowledge about R fundamentals (types of objects, functions, etc.).</p>
 </div>
 <div id="what-is-parallel-computing-anyway" class="section level2">
 <h2>What is parallel computing, anyway?</h2>
-<p>In very simple terms, parallel computing is all about making things run faster. More concrete, while there are plenty ways of accelerating calculations, parallel computing is all about doing multiple things simultaneously.</p>
+<p>In very simple terms, parallel computing is all about making things run faster. More concrete, while there are plenty of ways of accelerating calculations, parallel computing is all about doing multiple things simultaneously.</p>
 <p>Sequential computing, on the other hand, is what we usually see in R. When we make a call to a function, most of the time R is doing calculations using a single processor. While this may not be a problem if your call takes just a couple of seconds, it may be critical if, for example, the program needs to make a significant number of such calls, say 1,000, in order to be completed.</p>
-<p>While not a general rule, most of the time computationally intensive programs can be split in such a way that its components can be executed in a isolated way, this is, without relying in the other parts to be completed.</p>
+<p>While not a general rule, most of the time computationally intensive programs can be split in such a way that its components can be executed in an isolated way, this is, without relying on the other parts to be completed.</p>
 <p>For example, suppose that you have a function that takes a number and multiplies it by 2, let’s call it <code>f</code>:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>f &lt;-<span class="st"> </span><span class="cf">function</span>(n) n<span class="op">*</span><span class="dv">2</span></span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>f &lt;-<span class="st"> </span><span class="cf">function</span>(n) n <span class="op">*</span><span class="st"> </span><span class="dv">2</span></span></code></pre></div>
 <p>In R, this simple function can be applied seamlessly to a vector, for example:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>x &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">4</span></span>
 <span id="cb2-2"><a href="#cb2-2"></a><span class="kw">f</span>(x)</span></code></pre></div>
@@ -507,7 +507,7 @@ div.tocify {
 <div id="when-is-it-a-good-idea" class="section level2">
 <h2>When is it a good idea?</h2>
 <p>Parallel computing sounds great, but is it always a good idea to try to <strong>parallelize</strong> your program? The answer is no.</p>
-<p>A lot of times we feel pushed towards writing the code as efficient as possible. Moreover, this is a known problem among software developers, see for example this hilarious reply on <a href="https://www.stackoverflow.com">Stackoverflow</a> regarding “bets comment in source code”<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>:</p>
+<p>A lot of times we feel pushed towards writing the code as efficiently as possible. Moreover, this is a known problem among software developers, see for example this hilarious reply on <a href="https://www.stackoverflow.com">Stackoverflow</a> regarding “best comment in source code”<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>:</p>
 <pre><code>// 
 // Dear maintainer:
 // 
@@ -518,24 +518,24 @@ div.tocify {
 // 
 // total_hours_wasted_here = 42
 // </code></pre>
-<p>While optimizing a program may be important in some cases, time constraints and readability may be more important in relative terms. As a rule of thumb, you will only want to optimize your code if by doing so the potential speed gains are worthwhile, for example, reducing computation speed to half of the original time in a algorithm that takes more than just a few seconds. Other examples include:</p>
-<p>Good idea when:</p>
+<p>While optimizing a program may be important in some cases, time constraints and readability may be more important in relative terms. As a rule of thumb, you will only want to optimize your code if by doing so the potential speed gains are worthwhile, for example, reducing computation speed to half of the original time in an algorithm that takes more than just a few seconds. Other examples include:</p>
+<p>A good idea when:</p>
 <ul>
 <li><p>You are writing a log-likelihood Function that you need to maximize. Solvers take, for example, at least 5 calls to the objective function so it makes sense to speed up the call.</p></li>
-<li><p>Even more relevant than a simple optimization, if the function needs to be called thousands of times like in a MCMC algorithm, then it definitely makes sense to improve speed.</p></li>
+<li><p>Even more relevant than a simple optimization, if the function needs to be called thousands of times like in an MCMC algorithm, then it definitely makes sense to improve speed.</p></li>
 <li><p>You are processing chunks of data in which each requires a significant amount of time to be processed.</p></li>
 </ul>
 <p>Bad idea when:</p>
 <ul>
 <li><p>The section of the program that you want to speed up already takes a relatively small time to be completed, for example, a few seconds or a fraction of a second.</p></li>
-<li><p>The section of the program you are trying to optimize is not the the actual bottle neck of the program<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a></p></li>
+<li><p>The section of the program you are trying to optimize is not the actual bottleneck of the program<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a></p></li>
 </ul>
 <p>If your computational problem is reasonable enough to think about code optimization, and furthermore, implementing parallel computing, then the following diagram should be a useful guide to follow:</p>
 <div class="figure">
 <img src="figure/when_to_parallel.png" alt="" />
 <p class="caption">Ask yourself these questions before jumping into HPC!</p>
 </div>
-<p>If your problem reached the part in which it can be parallelized but there are no tools around for you to use, keep reading, otherwise move to the next chapter and don’t come back until you have a problem worthy enough to be dealt with parallel computing… just kidding.</p>
+<p>If your problem reached the part in which it can be parallelized but there are no tools around for you to use, keep reading, otherwise move to the next chapter, and don’t come back until you have a problem worthy enough to be dealt with parallel computing… just kidding.</p>
 </div>
 <div id="fundamentals" class="section level2">
 <h2>Fundamentals</h2>
@@ -550,7 +550,7 @@ div.tocify {
 </div>
 <div id="what-you-need-to-know-about-hardware" class="section level3">
 <h3>What you need to know about Hardware</h3>
-<p>One important thing to know is how many resources we have, and resources can be very different across systems. In general, we can talk about a computer’s processing unit, CPU, as a collection of cores which are grouped/arranged in sockets. More over, modern CPUs such as those built by intel have what they call multithreaded technology, which in raw terms means a single physical core behaving as multiple ones. The following figure shows a nice illustration of this:</p>
+<p>One important thing to know is how many resources we have, and resources can be very different across systems. In general, we can talk about a computer’s processing unit, CPU, as a collection of cores which are grouped/arranged in sockets. Moreover, modern CPUs such as those built by intel have what they call multithreaded technology, which in raw terms means a single physical core behaving as multiple ones. The following figure shows a nice illustration of this:</p>
 <div class="figure">
 <img src="figure/cpu-slurm.png" alt="" />
 <p class="caption">Taxonomy of CPUs (Downloaded from de <a href="https://slurm.schedmd.com/mc_support.html" class="uri">https://slurm.schedmd.com/mc_support.html</a>)</p>
@@ -565,7 +565,7 @@ div.tocify {
 <ol style="list-style-type: decimal">
 <li><p>Big data: How to work with data that doesn’t fit your computer</p></li>
 <li><p>Parallel computing: How to take advantage of multiple core systems</p></li>
-<li><p>Compiled code: Write your own low-level code (if R doesn’t has it yet…)</p></li>
+<li><p>Compiled code: Write your own low-level code (if R doesn’t have it yet…)</p></li>
 </ol>
 <p>In the case of Big Data, some solutions include:</p>
 <ul>
@@ -583,18 +583,186 @@ div.tocify {
 <li><p>Compiling R with BLAS allowing for parallel computing (a couple of examples <a href="https://www.r-bloggers.com/why-is-r-slow-some-explanations-and-mklopenblas-setup-to-try-to-fix-this/">here</a> and <a href="https://www.r-bloggers.com/compile-r-and-openblas-from-source-guide/">here</a>);</p></li>
 <li><p>Getting the opensource version pqR (<a href="http://www.pqr-project.org/">pretty quick R</a>, which at the writing of this has a stable release published on February 19th, 2019);</p></li>
 </ul>
-<p>When it comes to use “normal” R, there are several alternatives (just take a look at the <a href="https://cran.r-project.org/web/views/HighPerformanceComputing.html">High-Performance Computing Task View</a>). Here we will focus on the following R-packages/tools for explicit parallelism:</p>
-<ol style="list-style-type: decimal">
-<li><p><strong>parallel</strong>: R package that provides ‘[s]upport for parallel computation, including random-number generation’.</p></li>
-<li><p>RcppArmadillo + OpenMP</p>
+<p>When it comes to using “normal” R, there are several alternatives (just take a look at the <a href="https://cran.r-project.org/web/views/HighPerformanceComputing.html">High-Performance Computing Task View</a>).</p>
+<p>When you have a task that you need to perform in parallel it comes in two main flavors. The first flavor is what we call <a href="https://en.wikipedia.org/wiki/Embarrassingly_parallel">embarrassingly parallel</a> or perfectly parallel. These are tasks where you need to do one thing many many times over with complete independence between each task. Wrapping 100 presents is a perfectly parallel task. Inviting 4 friends over would make that task almost 5 times faster then if you were to do that task yourself. The second flavor is one massive task that has some sub-parts that could use parallel computing tasks. These tasks often involve iterative tasks and matrix multiplications</p>
+<p>here are examples of how to use different packages to speed up embarrassingly parallel tasks.</p>
+<p>We will showcase how to perform these tasks using the same task.</p>
+<p><strong>Simulating pi</strong></p>
 <ul>
-<li><p><strong>RcppArmadillo</strong>: ‘Armadillo is a C++ linear algebra library, aiming towards a good balance between speed and ease of use.’ ‘[RcppArmadillo] brings the power of Armadillo to R.’</p></li>
-<li><p><strong>OpenMP</strong>: ‘Open Multi-Processing is an application programming interface (API) that supports multi-platform shared memory multiprocessing programming in C, C++, and Fortran, on most platforms, processor architectures and operating systems, including Solaris, AIX, HP-UX, Linux, macOS, and Windows.’ (<a href="https://en.wikipedia.org/wiki/OpenMP">Wiki</a>)</p></li>
-</ul></li>
-</ol>
-<p>Implicit parallelism, on the other hand, are out-of-the-box tools that allow the programmer not to worry about parallelization, e.g. such as <a href="https://cran.r-project.org/package=gpuR"><strong>gpuR</strong></a> for Matrix manipulation using GPU.</p>
+<li><p>We know that <span class="math inline">\(\pi = \frac{A}{r^2}\)</span>. We approximate it by randomly adding points <span class="math inline">\(x\)</span> to a square of size 2 centered at the origin.</p></li>
+<li><p>So, we approximate <span class="math inline">\(\pi\)</span> as <span class="math inline">\(\Pr\{\|x\| \leq 1\}\times 2^2\)</span></p></li>
+</ul>
+<p>The R code to do this</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>pisim &lt;-<span class="st"> </span><span class="cf">function</span>(nsim) {</span>
+<span id="cb7-2"><a href="#cb7-2"></a>  ans  &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">runif</span>(nsim <span class="op">*</span><span class="st"> </span><span class="dv">2</span>), <span class="dt">ncol =</span> <span class="dv">2</span>)</span>
+<span id="cb7-3"><a href="#cb7-3"></a>  </span>
+<span id="cb7-4"><a href="#cb7-4"></a>  ans  &lt;-<span class="st"> </span><span class="kw">sqrt</span>(<span class="kw">rowSums</span>(ans <span class="op">^</span><span class="st"> </span><span class="dv">2</span>))</span>
+<span id="cb7-5"><a href="#cb7-5"></a>  (<span class="kw">sum</span>(ans <span class="op">&lt;=</span><span class="st"> </span><span class="dv">1</span>) <span class="op">*</span><span class="st"> </span><span class="dv">4</span>) <span class="op">/</span><span class="st"> </span>nsim</span>
+<span id="cb7-6"><a href="#cb7-6"></a>}</span>
+<span id="cb7-7"><a href="#cb7-7"></a></span>
+<span id="cb7-8"><a href="#cb7-8"></a><span class="kw">pisim</span>(<span class="dv">1000</span>)</span></code></pre></div>
+<pre><code>## [1] 3.164</code></pre>
+<p>The non-parallel way to run this many times is to use a looping structure such as <code>lapply()</code>, <code>vapply()</code> or <code>purrr::map()</code>.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="kw">lapply</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, pisim)</span></code></pre></div>
+<pre><code>## [[1]]
+## [1] 4
+## 
+## [[2]]
+## [1] 4
+## 
+## [[3]]
+## [1] 2.666667
+## 
+## [[4]]
+## [1] 4
+## 
+## [[5]]
+## [1] 3.2</code></pre>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="kw">vapply</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, pisim, <span class="dt">FUN.VALUE =</span> <span class="kw">numeric</span>(<span class="dv">1</span>))</span></code></pre></div>
+<pre><code>## [1] 4.0 4.0 4.0 2.0 3.2</code></pre>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>purrr<span class="op">::</span><span class="kw">map</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, pisim)</span></code></pre></div>
+<pre><code>## [[1]]
+## [1] 0
+## 
+## [[2]]
+## [1] 4
+## 
+## [[3]]
+## [1] 4
+## 
+## [[4]]
+## [1] 4
+## 
+## [[5]]
+## [1] 3.2</code></pre>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>purrr<span class="op">::</span><span class="kw">map_dbl</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, pisim)</span></code></pre></div>
+<pre><code>## [1] 0.0 4.0 4.0 2.0 3.2</code></pre>
+</div>
+<div id="embarresinly-parallel" class="section level2">
+<h2>Embarresinly parallel</h2>
+<div id="the-future.apply-package" class="section level3">
+<h3>The future.apply package</h3>
+<p>The <a href="https://github.com/HenrikBengtsson/future.apply">future.apply</a> package is a small package based on the <a href="https://github.com/HenrikBengtsson/future">future</a> package to allow for a drop-in replacement for <code>*apply()</code> functions.</p>
+<p>If your code has a place where you are using any of the <code>*apply()</code> functions you can simply specify a <a href="https://github.com/HenrikBengtsson/future#controlling-how-futures-are-resolved">plan</a> and prefix the applys with <code>future_</code></p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a><span class="kw">library</span>(future.apply)</span></code></pre></div>
+<pre><code>## Loading required package: future</code></pre>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a><span class="kw">plan</span>(multisession) <span class="co">## Run in parallel on local computer</span></span>
+<span id="cb19-2"><a href="#cb19-2"></a></span>
+<span id="cb19-3"><a href="#cb19-3"></a><span class="kw">future_lapply</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="dt">FUN =</span> pisim)</span></code></pre></div>
+<pre><code>## [[1]]
+## [1] 4
+## 
+## [[2]]
+## [1] 2
+## 
+## [[3]]
+## [1] 4
+## 
+## [[4]]
+## [1] 3
+## 
+## [[5]]
+## [1] 3.2</code></pre>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a><span class="kw">future_vapply</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="dt">FUN =</span> pisim, <span class="dt">FUN.VALUE =</span> <span class="kw">numeric</span>(<span class="dv">1</span>))</span></code></pre></div>
+<pre><code>## [1] 4.0 4.0 4.0 2.0 2.4</code></pre>
+</div>
+<div id="the-furrr-package" class="section level3">
+<h3>The furrr package</h3>
+<p>The <a href="https://github.com/DavisVaughan/furrr">furrr</a> package is a small package based on the <a href="https://github.com/HenrikBengtsson/future">future</a> package to allow for a drop-in replacement for purrr’s <code>map()</code> functions.</p>
+<p>If your code has a place where you are using any of the <code>purrr::map*()</code> functions you can simply specify a <a href="https://github.com/HenrikBengtsson/future#controlling-how-futures-are-resolved">plan</a> and prefix the applys with <code>future_</code></p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a><span class="kw">library</span>(furrr)</span>
+<span id="cb23-2"><a href="#cb23-2"></a><span class="kw">plan</span>(multisession) <span class="co">## Run in parallel on local computer</span></span>
+<span id="cb23-3"><a href="#cb23-3"></a></span>
+<span id="cb23-4"><a href="#cb23-4"></a><span class="kw">future_map</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, pisim)</span></code></pre></div>
+<pre><code>## [[1]]
+## [1] 4
+## 
+## [[2]]
+## [1] 4
+## 
+## [[3]]
+## [1] 4
+## 
+## [[4]]
+## [1] 4
+## 
+## [[5]]
+## [1] 2.4</code></pre>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a><span class="kw">future_map</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="op">~</span><span class="st"> </span><span class="kw">pisim</span>(.x))</span></code></pre></div>
+<pre><code>## [[1]]
+## [1] 0
+## 
+## [[2]]
+## [1] 2
+## 
+## [[3]]
+## [1] 2.666667
+## 
+## [[4]]
+## [1] 3
+## 
+## [[5]]
+## [1] 3.2</code></pre>
+</div>
+<div id="the-foreach" class="section level3">
+<h3>The foreach</h3>
+<p>The <a href="https://github.com/RevolutionAnalytics/foreach">foreach</a> package provides a nice looping structure. You start with a call to <code>foreach()</code> where you pass what you want to loop over then <code>%do%</code> into an expression you want to be performed.</p>
+<p>In this case, have we passed in the vector <code>1:5</code> and it is passed to <code>pisim()</code>.</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a><span class="kw">library</span>(foreach)</span>
+<span id="cb27-2"><a href="#cb27-2"></a><span class="kw">foreach</span>(<span class="dt">dat =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>) <span class="op">%do%</span><span class="st"> </span>{</span>
+<span id="cb27-3"><a href="#cb27-3"></a>    <span class="kw">pisim</span>(dat)</span>
+<span id="cb27-4"><a href="#cb27-4"></a>}</span></code></pre></div>
+<pre><code>## [[1]]
+## [1] 0
+## 
+## [[2]]
+## [1] 4
+## 
+## [[3]]
+## [1] 4
+## 
+## [[4]]
+## [1] 4
+## 
+## [[5]]
+## [1] 4</code></pre>
+<p>if you want to perform the same function multiple times you simply pass foreach a vector with a length of the desired number of iterations. This is easily done with <code>seq_len()</code></p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1"></a><span class="kw">foreach</span>(<span class="dt">dat =</span> <span class="kw">seq_len</span>(<span class="dv">5</span>)) <span class="op">%do%</span><span class="st"> </span>{</span>
+<span id="cb29-2"><a href="#cb29-2"></a>    <span class="kw">pisim</span>(<span class="dv">10000</span>)</span>
+<span id="cb29-3"><a href="#cb29-3"></a>}</span></code></pre></div>
+<pre><code>## [[1]]
+## [1] 3.1044
+## 
+## [[2]]
+## [1] 3.1588
+## 
+## [[3]]
+## [1] 3.1376
+## 
+## [[4]]
+## [1] 3.1296
+## 
+## [[5]]
+## [1] 3.1524</code></pre>
+<p><code>foreach()</code> comes with a <code>.combine</code> argument which specifies how the result from each iteration should be combined. <code>c()</code> works well for concatenating vectors</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1"></a><span class="kw">foreach</span>(<span class="dt">dat =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="dt">.combine =</span> c) <span class="op">%do%</span><span class="st"> </span>{</span>
+<span id="cb31-2"><a href="#cb31-2"></a>    <span class="kw">pisim</span>(dat)</span>
+<span id="cb31-3"><a href="#cb31-3"></a>}</span></code></pre></div>
+<pre><code>## [1] 4.0 4.0 4.0 4.0 3.2</code></pre>
+<p>but you can also use functions like <code>rbind()</code> if your output is a data.frame and want them combined. (This example is not a very efficient, but it illustrates a broader use-case)</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1"></a><span class="kw">foreach</span>(<span class="dt">dat =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="dt">.combine =</span> rbind) <span class="op">%do%</span><span class="st"> </span>{</span>
+<span id="cb33-2"><a href="#cb33-2"></a>    <span class="kw">data.frame</span>(<span class="dt">pi =</span> <span class="kw">pisim</span>(dat))</span>
+<span id="cb33-3"><a href="#cb33-3"></a>}</span></code></pre></div>
+<pre><code>##         pi
+## 1 0.000000
+## 2 4.000000
+## 3 2.666667
+## 4 4.000000
+## 5 3.200000</code></pre>
+</div>
 <div id="the-parallel-package" class="section level3">
 <h3>The parallel package</h3>
+<p><strong>parallel</strong>: R package that provides ‘[s]upport for parallel computation, including random-number generation’.</p>
 <ol style="list-style-type: decimal">
 <li><p>Create a cluster:</p>
 <ol style="list-style-type: lower-alpha">
@@ -615,112 +783,120 @@ div.tocify {
 </ol></li>
 <li><p>Stop the cluster with <code>clusterStop</code></p></li>
 </ol>
+<div id="parallel-example-1-simulating-pi" class="section level4">
+<h4>parallel example 1: Simulating <span class="math inline">\(\pi\)</span></h4>
+<p>To be able to use a function in the parallel framework we need to do a small rewrite of the function such that it starts with an i argument.</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1"></a>parallel_pisim &lt;-<span class="st"> </span><span class="cf">function</span>(i, nsim) {</span>
+<span id="cb35-2"><a href="#cb35-2"></a>  ans  &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">runif</span>(nsim <span class="op">*</span><span class="st"> </span><span class="dv">2</span>), <span class="dt">ncol =</span> <span class="dv">2</span>)</span>
+<span id="cb35-3"><a href="#cb35-3"></a>  </span>
+<span id="cb35-4"><a href="#cb35-4"></a>  ans  &lt;-<span class="st"> </span><span class="kw">sqrt</span>(<span class="kw">rowSums</span>(ans <span class="op">^</span><span class="st"> </span><span class="dv">2</span>))</span>
+<span id="cb35-5"><a href="#cb35-5"></a>  (<span class="kw">sum</span>(ans <span class="op">&lt;=</span><span class="st"> </span><span class="dv">1</span>) <span class="op">*</span><span class="st"> </span><span class="dv">4</span>) <span class="op">/</span><span class="st"> </span>nsim</span>
+<span id="cb35-6"><a href="#cb35-6"></a>}</span>
+<span id="cb35-7"><a href="#cb35-7"></a></span>
+<span id="cb35-8"><a href="#cb35-8"></a><span class="co"># 1. CREATING A CLUSTER</span></span>
+<span id="cb35-9"><a href="#cb35-9"></a><span class="kw">library</span>(parallel)</span>
+<span id="cb35-10"><a href="#cb35-10"></a>cl &lt;-<span class="st"> </span><span class="kw">makePSOCKcluster</span>(<span class="dv">10</span>)</span>
+<span id="cb35-11"><a href="#cb35-11"></a></span>
+<span id="cb35-12"><a href="#cb35-12"></a><span class="co"># 2. PREPARING THE CLUSTER</span></span>
+<span id="cb35-13"><a href="#cb35-13"></a><span class="kw">clusterSetRNGStream</span>(cl, <span class="dv">123</span>)</span>
+<span id="cb35-14"><a href="#cb35-14"></a></span>
+<span id="cb35-15"><a href="#cb35-15"></a><span class="co"># Number of simulations we want each time to run</span></span>
+<span id="cb35-16"><a href="#cb35-16"></a>nsim &lt;-<span class="st"> </span><span class="fl">1e5</span></span>
+<span id="cb35-17"><a href="#cb35-17"></a></span>
+<span id="cb35-18"><a href="#cb35-18"></a><span class="co"># We need to make -nsim- and -pisim- available to the</span></span>
+<span id="cb35-19"><a href="#cb35-19"></a><span class="co"># cluster</span></span>
+<span id="cb35-20"><a href="#cb35-20"></a><span class="kw">clusterExport</span>(cl, <span class="kw">c</span>(<span class="st">&quot;nsim&quot;</span>, <span class="st">&quot;parallel_pisim&quot;</span>))</span>
+<span id="cb35-21"><a href="#cb35-21"></a></span>
+<span id="cb35-22"><a href="#cb35-22"></a><span class="co"># 3. DO YOUR CALL</span></span>
+<span id="cb35-23"><a href="#cb35-23"></a><span class="kw">parLapply</span>(cl, <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, parallel_pisim, <span class="dt">nsim =</span> nsim)</span></code></pre></div>
+<pre><code>## [[1]]
+## [1] 3.14696
+## 
+## [[2]]
+## [1] 3.1378
+## 
+## [[3]]
+## [1] 3.14236
+## 
+## [[4]]
+## [1] 3.14052
+## 
+## [[5]]
+## [1] 3.13144</code></pre>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1"></a><span class="kw">parSapply</span>(cl, <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, parallel_pisim, <span class="dt">nsim =</span> nsim)</span></code></pre></div>
+<pre><code>## [1] 3.14420 3.14276 3.13592 3.14480 3.14628</code></pre>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1"></a><span class="co"># 4. STOP THE CLUSTER</span></span>
+<span id="cb39-2"><a href="#cb39-2"></a><span class="kw">stopCluster</span>(cl)</span></code></pre></div>
+<p>Please note that parallel does have a <code>parVapply()</code> so you need to be really careful with your output.</p>
 </div>
-<div id="parallel-example-1-parallel-rng" class="section level3">
-<h3>parallel example 1: Parallel RNG</h3>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="co"># 1. CREATING A CLUSTER</span></span>
-<span id="cb7-2"><a href="#cb7-2"></a><span class="kw">library</span>(parallel)</span>
-<span id="cb7-3"><a href="#cb7-3"></a>cl &lt;-<span class="st"> </span><span class="kw">makePSOCKcluster</span>(<span class="dv">2</span>)    </span>
-<span id="cb7-4"><a href="#cb7-4"></a></span>
-<span id="cb7-5"><a href="#cb7-5"></a><span class="co"># 2. PREPARING THE CLUSTER</span></span>
-<span id="cb7-6"><a href="#cb7-6"></a><span class="kw">clusterSetRNGStream</span>(cl, <span class="dv">123</span>) <span class="co"># Equivalent to `set.seed(123)`</span></span>
-<span id="cb7-7"><a href="#cb7-7"></a></span>
-<span id="cb7-8"><a href="#cb7-8"></a><span class="co"># 3. DO YOUR CALL</span></span>
-<span id="cb7-9"><a href="#cb7-9"></a>ans &lt;-<span class="st"> </span><span class="kw">parSapply</span>(cl, <span class="dv">1</span><span class="op">:</span><span class="dv">2</span>, <span class="cf">function</span>(x) <span class="kw">runif</span>(<span class="fl">1e3</span>))</span>
-<span id="cb7-10"><a href="#cb7-10"></a>(ans0 &lt;-<span class="st"> </span><span class="kw">var</span>(ans))</span></code></pre></div>
-<pre><code>#               [,1]          [,2]
-# [1,]  0.0861888293 -0.0001633431
-# [2,] -0.0001633431  0.0853841838</code></pre>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="co"># I want to get the same!</span></span>
-<span id="cb9-2"><a href="#cb9-2"></a><span class="kw">clusterSetRNGStream</span>(cl, <span class="dv">123</span>)</span>
-<span id="cb9-3"><a href="#cb9-3"></a>ans1 &lt;-<span class="st"> </span><span class="kw">var</span>(<span class="kw">parSapply</span>(cl, <span class="dv">1</span><span class="op">:</span><span class="dv">2</span>, <span class="cf">function</span>(x) <span class="kw">runif</span>(<span class="fl">1e3</span>)))</span>
-<span id="cb9-4"><a href="#cb9-4"></a></span>
-<span id="cb9-5"><a href="#cb9-5"></a>ans0 <span class="op">-</span><span class="st"> </span>ans1 <span class="co"># A matrix of zeros</span></span></code></pre></div>
-<pre><code>#      [,1] [,2]
-# [1,]    0    0
-# [2,]    0    0</code></pre>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="co"># 4. STOP THE CLUSTER</span></span>
-<span id="cb11-2"><a href="#cb11-2"></a><span class="kw">stopCluster</span>(cl)</span></code></pre></div>
+<div id="parallel-example-2-parallel-rng" class="section level4">
+<h4>parallel example 2: Parallel RNG</h4>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1"></a><span class="co"># 1. CREATING A CLUSTER</span></span>
+<span id="cb40-2"><a href="#cb40-2"></a>cl &lt;-<span class="st"> </span><span class="kw">makePSOCKcluster</span>(<span class="dv">2</span>)    </span>
+<span id="cb40-3"><a href="#cb40-3"></a></span>
+<span id="cb40-4"><a href="#cb40-4"></a><span class="co"># 2. PREPARING THE CLUSTER</span></span>
+<span id="cb40-5"><a href="#cb40-5"></a><span class="kw">clusterSetRNGStream</span>(cl, <span class="dv">123</span>) <span class="co"># Equivalent to `set.seed(123)`</span></span>
+<span id="cb40-6"><a href="#cb40-6"></a></span>
+<span id="cb40-7"><a href="#cb40-7"></a><span class="co"># 3. DO YOUR CALL</span></span>
+<span id="cb40-8"><a href="#cb40-8"></a>ans &lt;-<span class="st"> </span><span class="kw">parSapply</span>(cl, <span class="dv">1</span><span class="op">:</span><span class="dv">2</span>, <span class="cf">function</span>(x) <span class="kw">runif</span>(<span class="fl">1e3</span>))</span>
+<span id="cb40-9"><a href="#cb40-9"></a>(ans0 &lt;-<span class="st"> </span><span class="kw">var</span>(ans))</span></code></pre></div>
+<pre><code>##               [,1]          [,2]
+## [1,]  0.0861888293 -0.0001633431
+## [2,] -0.0001633431  0.0853841838</code></pre>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1"></a><span class="co"># I want to get the same!</span></span>
+<span id="cb42-2"><a href="#cb42-2"></a><span class="kw">clusterSetRNGStream</span>(cl, <span class="dv">123</span>)</span>
+<span id="cb42-3"><a href="#cb42-3"></a>ans1 &lt;-<span class="st"> </span><span class="kw">var</span>(<span class="kw">parSapply</span>(cl, <span class="dv">1</span><span class="op">:</span><span class="dv">2</span>, <span class="cf">function</span>(x) <span class="kw">runif</span>(<span class="fl">1e3</span>)))</span>
+<span id="cb42-4"><a href="#cb42-4"></a></span>
+<span id="cb42-5"><a href="#cb42-5"></a>ans0 <span class="op">-</span><span class="st"> </span>ans1 <span class="co"># A matrix of zeros</span></span></code></pre></div>
+<pre><code>##      [,1] [,2]
+## [1,]    0    0
+## [2,]    0    0</code></pre>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1"></a><span class="co"># 4. STOP THE CLUSTER</span></span>
+<span id="cb44-2"><a href="#cb44-2"></a><span class="kw">stopCluster</span>(cl)</span></code></pre></div>
 <p>In the case of <code>makeForkCluster</code></p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="co"># 1. CREATING A CLUSTER</span></span>
-<span id="cb12-2"><a href="#cb12-2"></a><span class="kw">library</span>(parallel)</span>
-<span id="cb12-3"><a href="#cb12-3"></a></span>
-<span id="cb12-4"><a href="#cb12-4"></a><span class="co"># The fork cluster will copy the -nsims- object</span></span>
-<span id="cb12-5"><a href="#cb12-5"></a>nsims &lt;-<span class="st"> </span><span class="fl">1e3</span></span>
-<span id="cb12-6"><a href="#cb12-6"></a>cl    &lt;-<span class="st"> </span><span class="kw">makeForkCluster</span>(<span class="dv">2</span>)    </span>
-<span id="cb12-7"><a href="#cb12-7"></a></span>
-<span id="cb12-8"><a href="#cb12-8"></a><span class="co"># 2. PREPARING THE CLUSTER</span></span>
-<span id="cb12-9"><a href="#cb12-9"></a><span class="kw">RNGkind</span>(<span class="st">&quot;L&#39;Ecuyer-CMRG&quot;</span>)</span>
-<span id="cb12-10"><a href="#cb12-10"></a><span class="kw">set.seed</span>(<span class="dv">123</span>) </span>
-<span id="cb12-11"><a href="#cb12-11"></a></span>
-<span id="cb12-12"><a href="#cb12-12"></a><span class="co"># 3. DO YOUR CALL</span></span>
-<span id="cb12-13"><a href="#cb12-13"></a>ans &lt;-<span class="st"> </span><span class="kw">do.call</span>(cbind, <span class="kw">mclapply</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>, <span class="cf">function</span>(x) {</span>
-<span id="cb12-14"><a href="#cb12-14"></a>  <span class="kw">runif</span>(nsims) <span class="co"># Look! we use the nsims object!</span></span>
-<span id="cb12-15"><a href="#cb12-15"></a>               <span class="co"># This would have fail in makePSOCKCluster</span></span>
-<span id="cb12-16"><a href="#cb12-16"></a>               <span class="co"># if we didn&#39;t copy -nsims- first.</span></span>
-<span id="cb12-17"><a href="#cb12-17"></a>  }))</span>
-<span id="cb12-18"><a href="#cb12-18"></a>(ans0 &lt;-<span class="st"> </span><span class="kw">var</span>(ans))</span></code></pre></div>
-<pre><code>#            [,1]       [,2]
-# [1,] 0.08538418 0.00239079
-# [2,] 0.00239079 0.08114219</code></pre>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="co"># Same sequence with same seed</span></span>
-<span id="cb14-2"><a href="#cb14-2"></a><span class="kw">set.seed</span>(<span class="dv">123</span>) </span>
-<span id="cb14-3"><a href="#cb14-3"></a>ans1 &lt;-<span class="st"> </span><span class="kw">var</span>(<span class="kw">do.call</span>(cbind, <span class="kw">mclapply</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>, <span class="cf">function</span>(x) <span class="kw">runif</span>(nsims))))</span>
-<span id="cb14-4"><a href="#cb14-4"></a></span>
-<span id="cb14-5"><a href="#cb14-5"></a>ans0 <span class="op">-</span><span class="st"> </span>ans1 <span class="co"># A matrix of zeros</span></span></code></pre></div>
-<pre><code>#      [,1] [,2]
-# [1,]    0    0
-# [2,]    0    0</code></pre>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="co"># 4. STOP THE CLUSTER</span></span>
-<span id="cb16-2"><a href="#cb16-2"></a><span class="kw">stopCluster</span>(cl)</span></code></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1"></a><span class="co"># 1. CREATING A CLUSTER</span></span>
+<span id="cb45-2"><a href="#cb45-2"></a><span class="kw">library</span>(parallel)</span>
+<span id="cb45-3"><a href="#cb45-3"></a></span>
+<span id="cb45-4"><a href="#cb45-4"></a><span class="co"># The fork cluster will copy the -nsims- object</span></span>
+<span id="cb45-5"><a href="#cb45-5"></a>nsims &lt;-<span class="st"> </span><span class="fl">1e3</span></span>
+<span id="cb45-6"><a href="#cb45-6"></a>cl    &lt;-<span class="st"> </span><span class="kw">makeForkCluster</span>(<span class="dv">2</span>)    </span>
+<span id="cb45-7"><a href="#cb45-7"></a></span>
+<span id="cb45-8"><a href="#cb45-8"></a><span class="co"># 2. PREPARING THE CLUSTER</span></span>
+<span id="cb45-9"><a href="#cb45-9"></a><span class="kw">RNGkind</span>(<span class="st">&quot;L&#39;Ecuyer-CMRG&quot;</span>)</span>
+<span id="cb45-10"><a href="#cb45-10"></a><span class="kw">set.seed</span>(<span class="dv">123</span>) </span>
+<span id="cb45-11"><a href="#cb45-11"></a></span>
+<span id="cb45-12"><a href="#cb45-12"></a><span class="co"># 3. DO YOUR CALL</span></span>
+<span id="cb45-13"><a href="#cb45-13"></a>ans &lt;-<span class="st"> </span><span class="kw">do.call</span>(cbind, <span class="kw">mclapply</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>, <span class="cf">function</span>(x) {</span>
+<span id="cb45-14"><a href="#cb45-14"></a>  <span class="kw">runif</span>(nsims) <span class="co"># Look! we use the nsims object!</span></span>
+<span id="cb45-15"><a href="#cb45-15"></a>               <span class="co"># This would have failed in makePSOCKCluster</span></span>
+<span id="cb45-16"><a href="#cb45-16"></a>               <span class="co"># if we didn&#39;t copy -nsims- first.</span></span>
+<span id="cb45-17"><a href="#cb45-17"></a>  }))</span>
+<span id="cb45-18"><a href="#cb45-18"></a>(ans0 &lt;-<span class="st"> </span><span class="kw">var</span>(ans))</span></code></pre></div>
+<pre><code>##            [,1]       [,2]
+## [1,] 0.08538418 0.00239079
+## [2,] 0.00239079 0.08114219</code></pre>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1"></a><span class="co"># Same sequence with same seed</span></span>
+<span id="cb47-2"><a href="#cb47-2"></a><span class="kw">set.seed</span>(<span class="dv">123</span>) </span>
+<span id="cb47-3"><a href="#cb47-3"></a>ans1 &lt;-<span class="st"> </span><span class="kw">var</span>(<span class="kw">do.call</span>(cbind, <span class="kw">mclapply</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>, <span class="cf">function</span>(x) <span class="kw">runif</span>(nsims))))</span>
+<span id="cb47-4"><a href="#cb47-4"></a></span>
+<span id="cb47-5"><a href="#cb47-5"></a>ans0 <span class="op">-</span><span class="st"> </span>ans1 <span class="co"># A matrix of zeros</span></span></code></pre></div>
+<pre><code>##      [,1] [,2]
+## [1,]    0    0
+## [2,]    0    0</code></pre>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1"></a><span class="co"># 4. STOP THE CLUSTER</span></span>
+<span id="cb49-2"><a href="#cb49-2"></a><span class="kw">stopCluster</span>(cl)</span></code></pre></div>
 </div>
 </div>
-<div id="parallel-example-2-simulating-pi" class="section level2">
-<h2>parallel example 2: Simulating <span class="math inline">\(\pi\)</span></h2>
+</div>
+<div id="allowing-parallel-computing-in-your-r-package" class="section level2">
+<h2>Allowing parallel computing in your R package</h2>
+<p>If you are writing a package that has functions that perform tasks that are done in parallel it is advised that you use <a href="https://github.com/RevolutionAnalytics/foreach">foreach</a> or <a href="https://github.com/HenrikBengtsson/future">future</a> in your package. This will mean that you as the package author can decide what parts of your code can run in parallel, and the user can decide how it should be run.</p>
+</div>
+<div id="references" class="section level2">
+<h2>References</h2>
 <ul>
-<li><p>We know that <span class="math inline">\(\pi = \frac{A}{r^2}\)</span>. We approximate it by randomly adding points <span class="math inline">\(x\)</span> to a square of size 2 centered at the origin.</p></li>
-<li><p>So, we approximate <span class="math inline">\(\pi\)</span> as <span class="math inline">\(\Pr\{\|x\| \leq 1\}\times 2^2\)</span></p></li>
+<li><a href="https://rstudio.com/resources/rstudioconf-2020/parallel-computing-with-r-using-foreach-future-and-other-packages/">Parallel computing with R using foreach, future, and other packages - Bryan Lewis</a></li>
 </ul>
-<p>The R code to do this</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>pisim &lt;-<span class="st"> </span><span class="cf">function</span>(i, nsim) {  <span class="co"># Notice we don&#39;t use the -i-</span></span>
-<span id="cb17-2"><a href="#cb17-2"></a>  <span class="co"># Random points</span></span>
-<span id="cb17-3"><a href="#cb17-3"></a>  ans  &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">runif</span>(nsim<span class="op">*</span><span class="dv">2</span>), <span class="dt">ncol=</span><span class="dv">2</span>)</span>
-<span id="cb17-4"><a href="#cb17-4"></a>  </span>
-<span id="cb17-5"><a href="#cb17-5"></a>  <span class="co"># Distance to the origin</span></span>
-<span id="cb17-6"><a href="#cb17-6"></a>  ans  &lt;-<span class="st"> </span><span class="kw">sqrt</span>(<span class="kw">rowSums</span>(ans<span class="op">^</span><span class="dv">2</span>))</span>
-<span id="cb17-7"><a href="#cb17-7"></a>  </span>
-<span id="cb17-8"><a href="#cb17-8"></a>  <span class="co"># Estimated pi</span></span>
-<span id="cb17-9"><a href="#cb17-9"></a>  (<span class="kw">sum</span>(ans <span class="op">&lt;=</span><span class="st"> </span><span class="dv">1</span>)<span class="op">*</span><span class="dv">4</span>)<span class="op">/</span>nsim</span>
-<span id="cb17-10"><a href="#cb17-10"></a>}</span></code></pre></div>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="co"># Setup</span></span>
-<span id="cb18-2"><a href="#cb18-2"></a>cl &lt;-<span class="st"> </span><span class="kw">makePSOCKcluster</span>(<span class="dv">10</span>)</span>
-<span id="cb18-3"><a href="#cb18-3"></a><span class="kw">clusterSetRNGStream</span>(cl, <span class="dv">123</span>)</span>
-<span id="cb18-4"><a href="#cb18-4"></a></span>
-<span id="cb18-5"><a href="#cb18-5"></a><span class="co"># Number of simulations we want each time to run</span></span>
-<span id="cb18-6"><a href="#cb18-6"></a>nsim &lt;-<span class="st"> </span><span class="fl">1e5</span></span>
-<span id="cb18-7"><a href="#cb18-7"></a></span>
-<span id="cb18-8"><a href="#cb18-8"></a><span class="co"># We need to make -nsim- and -pisim- available to the</span></span>
-<span id="cb18-9"><a href="#cb18-9"></a><span class="co"># cluster</span></span>
-<span id="cb18-10"><a href="#cb18-10"></a><span class="kw">clusterExport</span>(cl, <span class="kw">c</span>(<span class="st">&quot;nsim&quot;</span>, <span class="st">&quot;pisim&quot;</span>))</span>
-<span id="cb18-11"><a href="#cb18-11"></a></span>
-<span id="cb18-12"><a href="#cb18-12"></a><span class="co"># Benchmarking: parSapply and sapply will run this simulation</span></span>
-<span id="cb18-13"><a href="#cb18-13"></a><span class="co"># a hundred times each, so at the end we have 1e5*100 points</span></span>
-<span id="cb18-14"><a href="#cb18-14"></a><span class="co"># to approximate pi</span></span>
-<span id="cb18-15"><a href="#cb18-15"></a>rbenchmark<span class="op">::</span><span class="kw">benchmark</span>(</span>
-<span id="cb18-16"><a href="#cb18-16"></a>  <span class="dt">parallel =</span> <span class="kw">parSapply</span>(cl, <span class="dv">1</span><span class="op">:</span><span class="dv">100</span>, pisim, <span class="dt">nsim=</span>nsim),</span>
-<span id="cb18-17"><a href="#cb18-17"></a>  <span class="dt">serial   =</span> <span class="kw">sapply</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>, pisim, <span class="dt">nsim=</span>nsim), <span class="dt">replications =</span> <span class="dv">1</span></span>
-<span id="cb18-18"><a href="#cb18-18"></a>)[,<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>]</span></code></pre></div>
-<pre><code>#       test replications elapsed relative
-# 1 parallel            1   0.302    1.000
-# 2   serial            1   1.556    5.152</code></pre>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a>ans_par &lt;-<span class="st"> </span><span class="kw">parSapply</span>(cl, <span class="dv">1</span><span class="op">:</span><span class="dv">100</span>, pisim, <span class="dt">nsim=</span>nsim)</span>
-<span id="cb20-2"><a href="#cb20-2"></a>ans_ser &lt;-<span class="st"> </span><span class="kw">sapply</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>, pisim, <span class="dt">nsim=</span>nsim)</span>
-<span id="cb20-3"><a href="#cb20-3"></a><span class="kw">stopCluster</span>(cl)</span></code></pre></div>
-<pre><code>#      par      ser        R 
-# 3.141561 3.141247 3.141593</code></pre>
-<div id="speedup-things-with-rcpp-openmp" class="section level3">
-<h3>Speedup things with Rcpp + OpenMP</h3>
-</div>
 </div>
 <div class="footnotes">
 <hr />
@@ -780,7 +956,7 @@ $(document).ready(function ()  {
       theme: "bootstrap3",
       context: '.toc-content',
       hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
       },
       ignoreSelector: ".toc-ignore",
       scrollTo: 0
