@@ -1,0 +1,33 @@
+---
+title: "Introduction"
+output:
+  html_document:
+    theme: flatly
+    highlight: tango
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache = TRUE)
+```
+
+Welcome to the USC Biostats R Handbook. These chapters serves as a catalog of information that we find valuable for students, staff and faculty to know about if they are writing R code and packages.
+
+
+It is recommended that everybody read the chapters about 
+
+- [Coding Standards](handbook-standards.html),
+- [High Performance Computing](handbook-hpc.html) and,
+- [Parallel computing](handbook-parallel.html)
+
+These chapters should provide coding standards we wish to adhere by and methods of how to get your code running on HPC and in parallel to improve speed.
+
+If you are having problems with speed then take a look at
+
+- [Profiling](handbook-profiling.html) and
+- [Slow R patterns](handbook-slow-patterns.html)
+
+to learn how to profile your code, and see examples of easy speedups.
+
+If you are about to turn your code into a package then the following chapter is worthwhile to read
+
+- [R packages](handbook-r_package.html)

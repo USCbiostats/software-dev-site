@@ -433,28 +433,28 @@ div.tocify {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="handbook-00-introduction.html">Introduction</a>
+      <a href="handbook-introduction.html">Introduction</a>
     </li>
     <li>
-      <a href="handbook-01-standards.html">1: Standards</a>
+      <a href="handbook-standards.html">1: Standards</a>
     </li>
     <li>
-      <a href="handbook-02-r_package.html">2: R packages</a>
+      <a href="handbook-hpc.html">2: High Performance Computing</a>
     </li>
     <li>
-      <a href="handbook-03-parallel.html">3: Parallel</a>
+      <a href="handbook-parallel.html">3: parallel computing</a>
     </li>
     <li>
-      <a href="handbook-04-testing.html">4: Testing</a>
+      <a href="handbook-profiling.html">4: Profiling</a>
     </li>
     <li>
-      <a href="handbook-05-profiling.html">5: Profiling</a>
+      <a href="handbook-slow-patterns.html">5: Slow R patterns</a>
     </li>
     <li>
-      <a href="handbook-06-hpc.html">6: High Performance Computing</a>
+      <a href="handbook-r_package.html">6: R packages</a>
     </li>
     <li>
-      <a href="handbook-07-slow-patterns.html">7: Slow R patterns</a>
+      <a href="handbook-testing.html">7: Testing</a>
     </li>
   </ul>
 </li>
@@ -505,8 +505,8 @@ div.tocify {
 <pre><code>## # A tibble: 2 x 6
 ##   expression      min   median `itr/sec` mem_alloc `gc/sec`
 ##   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;
-## 1 rowVars      8.01ms   9.26ms      107.     1.3MB     53.4
-## 2 applt        8.48ms   8.88ms      112.    2.02MB     49.4</code></pre>
+## 1 rowVars      9.09ms   10.8ms      80.6     1.3MB     40.3
+## 2 applt        9.21ms   10.3ms      96.9    2.02MB     43.5</code></pre>
 </div>
 <div id="apply-sums" class="section level2">
 <h2>Apply Sums</h2>
@@ -519,7 +519,7 @@ div.tocify {
 <span id="cb4-6"><a href="#cb4-6"></a>  <span class="dt">.rowSums =</span> <span class="kw">.rowSums</span>(data, <span class="dv">100</span>, <span class="dv">100</span>)</span>
 <span id="cb4-7"><a href="#cb4-7"></a>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">plot</span>()</span></code></pre></div>
 <pre><code>## Loading required namespace: tidyr</code></pre>
-<p><img src="handbook-07-slow-patterns_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p><img src="handbook-slow-patterns_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>data &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">rnorm</span>(<span class="dv">1000000</span>), <span class="dt">nrow =</span> <span class="dv">1000</span>, <span class="dt">ncol =</span> <span class="dv">1000</span>)</span>
 <span id="cb6-2"><a href="#cb6-2"></a></span>
 <span id="cb6-3"><a href="#cb6-3"></a>bench<span class="op">::</span><span class="kw">mark</span>(</span>
@@ -527,12 +527,12 @@ div.tocify {
 <span id="cb6-5"><a href="#cb6-5"></a>  <span class="dt">rowSums =</span> <span class="kw">rowSums</span>(data),</span>
 <span id="cb6-6"><a href="#cb6-6"></a>  <span class="dt">.rowSums =</span> <span class="kw">.rowSums</span>(data, <span class="dv">1000</span>, <span class="dv">1000</span>)</span>
 <span id="cb6-7"><a href="#cb6-7"></a>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">plot</span>()</span></code></pre></div>
-<p><img src="handbook-07-slow-patterns_files/figure-html/unnamed-chunk-3-2.png" width="672" /></p>
+<p><img src="handbook-slow-patterns_files/figure-html/unnamed-chunk-3-2.png" width="672" /></p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>bench<span class="op">::</span><span class="kw">mark</span>(</span>
 <span id="cb7-2"><a href="#cb7-2"></a>  <span class="dt">apply =</span> <span class="kw">apply</span>(data, <span class="dv">1</span>, mean),</span>
 <span id="cb7-3"><a href="#cb7-3"></a>  <span class="dt">rowMeans =</span> <span class="kw">rowMeans</span>(data)</span>
 <span id="cb7-4"><a href="#cb7-4"></a>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">plot</span>()</span></code></pre></div>
-<p><img src="handbook-07-slow-patterns_files/figure-html/unnamed-chunk-3-3.png" width="672" /></p>
+<p><img src="handbook-slow-patterns_files/figure-html/unnamed-chunk-3-3.png" width="672" /></p>
 </div>
 <div id="sapply-vs-vapply" class="section level2">
 <h2>sapply() vs vapply()</h2>
@@ -540,7 +540,7 @@ div.tocify {
 <span id="cb8-2"><a href="#cb8-2"></a>  <span class="dt">sapply =</span> <span class="kw">sapply</span>(mtcars, sum),</span>
 <span id="cb8-3"><a href="#cb8-3"></a>  <span class="dt">vapply =</span> <span class="kw">vapply</span>(mtcars, sum, <span class="dt">FUN.VALUE =</span> <span class="kw">numeric</span>(<span class="dv">1</span>))</span>
 <span id="cb8-4"><a href="#cb8-4"></a>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">plot</span>()</span></code></pre></div>
-<p><img src="handbook-07-slow-patterns_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p><img src="handbook-slow-patterns_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 </div>
 <div id="any-function" class="section level2">
 <h2>any() function</h2>
@@ -563,15 +563,15 @@ div.tocify {
 <pre><code>## # A tibble: 6 x 14
 ##   expression  nval      min   median `itr/sec` mem_alloc `gc/sec` n_itr  n_gc
 ##   &lt;bch:expr&gt; &lt;dbl&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt;
-## 1 %in%          10    585ns    840ns  1074279.        0B       0  10000     0
-## 2 any           10    340ns    416ns  2145902.        0B     215.  9999     1
-## 3 %in%         100    873ns   1.16µs   698216.    1.27KB       0  10000     0
-## 4 any          100    576ns    649ns  1270306.      448B       0  10000     0
-## 5 %in%        1000   2.87µs   6.22µs   181803.   11.81KB       0  10000     0
-## 6 any         1000   4.16µs   4.45µs   212138.    3.95KB       0  10000     0
+## 1 %in%          10    636ns    933ns   979827.        0B     98.0  9999     1
+## 2 any           10    376ns    585ns  1420589.        0B      0   10000     0
+## 3 %in%         100   1.25µs   1.76µs   457942.    1.27KB      0   10000     0
+## 4 any          100    685ns   1.03µs   802915.      448B      0   10000     0
+## 5 %in%        1000   3.02µs   7.44µs   156221.   11.81KB      0   10000     0
+## 6 any         1000   2.63µs    3.8µs   248829.    3.95KB      0   10000     0
 ## # … with 5 more variables: total_time &lt;bch:tm&gt;, result &lt;list&gt;, memory &lt;list&gt;,
 ## #   time &lt;list&gt;, gc &lt;list&gt;</code></pre>
-<p><img src="handbook-07-slow-patterns_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p><img src="handbook-slow-patterns_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 </div>
 <div id="cut-vs-findinterval" class="section level2">
 <h2>cut() vs findInterval()</h2>
@@ -584,11 +584,11 @@ div.tocify {
 <pre><code>## # A tibble: 2 x 13
 ##   expression       min median `itr/sec` mem_alloc `gc/sec` n_itr  n_gc
 ##   &lt;bch:expr&gt;   &lt;bch:t&gt; &lt;bch:&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt;
-## 1 cut          555.1µs  641µs     1534.   273.7KB     2.09   734     1
-## 2 findInterval  93.7µs  109µs     9158.    46.3KB     2.15  4264     1
+## 1 cut            486µs  629µs     1531.   273.7KB     2.32   661     1
+## 2 findInterval  95.2µs  113µs     8109.    46.3KB     0     4054     0
 ## # … with 5 more variables: total_time &lt;bch:tm&gt;, result &lt;list&gt;, memory &lt;list&gt;,
 ## #   time &lt;list&gt;, gc &lt;list&gt;</code></pre>
-<p><img src="handbook-07-slow-patterns_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><img src="handbook-slow-patterns_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 </div>
 <div id="unlist" class="section level2">
 <h2>unlist()</h2>
@@ -600,8 +600,8 @@ div.tocify {
 <pre><code>## # A tibble: 2 x 6
 ##   expression             min   median `itr/sec` mem_alloc `gc/sec`
 ##   &lt;bch:expr&gt;        &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;
-## 1 use.names = TRUE   47.72µs  49.76µs    19521.    5.59KB      0  
-## 2 use.names = FALSE   2.21µs   2.74µs   354253.     2.8KB     35.4</code></pre>
+## 1 use.names = TRUE   48.54µs   61.6µs    14582.    5.59KB      0  
+## 2 use.names = FALSE   2.97µs    3.7µs   204043.     2.8KB     20.4</code></pre>
 </div>
 <div id="cumulative-function-and-other-math-group-functions" class="section level2">
 <h2>cumulative function and other math group functions</h2>
@@ -619,8 +619,8 @@ div.tocify {
 <pre><code>## # A tibble: 2 x 6
 ##   expression      min   median `itr/sec` mem_alloc `gc/sec`
 ##   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;
-## 1 table       540.4µs  663.3µs     1483.     683KB     4.78
-## 2 sum          24.9µs   27.3µs    33095.    39.1KB     3.31</code></pre>
+## 1 table       741.9µs   1.04ms      854.     683KB     2.30
+## 2 sum          26.9µs  38.41µs    22216.    39.1KB     2.71</code></pre>
 </div>
 <div id="table-vs-tabulate" class="section level2">
 <h2>table() vs tabulate()</h2>
@@ -630,9 +630,9 @@ div.tocify {
 <span id="cb21-3"><a href="#cb21-3"></a><span class="kw">table</span>(x)</span></code></pre></div>
 <pre><code>## x
 ##   1   2   3   4   5   6   7   8   9  10 
-##  96 105 104  96  90 104  85 106 105 109</code></pre>
+##  86 110 113  88 103  98  95  83  97 127</code></pre>
 <div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a><span class="kw">tabulate</span>(x)</span></code></pre></div>
-<pre><code>##  [1]  96 105 104  96  90 104  85 106 105 109</code></pre>
+<pre><code>##  [1]  86 110 113  88 103  98  95  83  97 127</code></pre>
 <div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a>bench<span class="op">::</span><span class="kw">mark</span>(<span class="dt">check =</span> <span class="ot">FALSE</span>,</span>
 <span id="cb25-2"><a href="#cb25-2"></a>  <span class="dt">table =</span> <span class="kw">table</span>(x),</span>
 <span id="cb25-3"><a href="#cb25-3"></a>  <span class="dt">tabulate =</span> <span class="kw">tabulate</span>(x)</span>
@@ -640,8 +640,8 @@ div.tocify {
 <pre><code>## # A tibble: 2 x 6
 ##   expression      min   median `itr/sec` mem_alloc `gc/sec`
 ##   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;
-## 1 table       116.1µs 139.18µs     7086.    63.3KB     6.48
-## 2 tabulate      3.4µs   4.41µs   226171.        0B    22.6</code></pre>
+## 1 table      136.97µs  154.8µs     6112.    63.3KB     6.61
+## 2 tabulate     4.08µs    4.9µs   195094.        0B     0</code></pre>
 </div>
 <div id="using-pipes" class="section level2">
 <h2>Using pipes</h2>
@@ -658,10 +658,10 @@ div.tocify {
 <pre><code>## # A tibble: 2 x 13
 ##   expression     min  median `itr/sec` mem_alloc `gc/sec` n_itr  n_gc total_time
 ##   &lt;bch:expr&gt; &lt;bch:t&gt; &lt;bch:t&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt;   &lt;bch:tm&gt;
-## 1 pipe        49.7µs  53.8µs    18219.      280B     16.8  8692     8   477.07ms
-## 2 no pipe      177ns   254ns  3616693.        0B      0   10000     0     2.77ms
+## 1 pipe        47.3µs  59.4µs    16067.      280B     14.7  7664     7   477.01ms
+## 2 no pipe      245ns   435ns  1608263.        0B      0   10000     0     6.22ms
 ## # … with 4 more variables: result &lt;list&gt;, memory &lt;list&gt;, time &lt;list&gt;, gc &lt;list&gt;</code></pre>
-<p><img src="handbook-07-slow-patterns_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p><img src="handbook-slow-patterns_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 </div>
 <div id="summing-weights" class="section level2">
 <h2>Summing weights</h2>
@@ -676,8 +676,8 @@ div.tocify {
 <pre><code>## # A tibble: 2 x 6
 ##   expression      min   median `itr/sec` mem_alloc `gc/sec`
 ##   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;
-## 1 %*%          18.1µs   18.8µs    50268.    7.86KB     5.03
-## 2 crossprod    13.6µs   13.9µs    70400.    2.23KB     0</code></pre>
+## 1 %*%            19µs   25.5µs    36084.    7.86KB     3.61
+## 2 crossprod    14.9µs   18.9µs    48820.    2.23KB     0</code></pre>
 </div>
 <div id="pmax-and-pmin" class="section level2">
 <h2>pmax() and pmin()</h2>
@@ -695,8 +695,8 @@ div.tocify {
 <pre><code>## # A tibble: 2 x 6
 ##   expression      min   median `itr/sec` mem_alloc `gc/sec`
 ##   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;
-## 1 pmin         6.92µs   8.64µs   108557.    7.86KB     10.9
-## 2 rewrite      3.16µs   5.71µs   185785.   17.07KB      0</code></pre>
+## 1 pmin         8.79µs  11.38µs    72721.    7.86KB     14.5
+## 2 rewrite      3.65µs   4.71µs   192391.   17.13KB      0</code></pre>
 </div>
 <div id="lm" class="section level2">
 <h2>lm()</h2>
@@ -712,8 +712,8 @@ div.tocify {
 <pre><code>## # A tibble: 2 x 6
 ##   expression      min   median `itr/sec` mem_alloc `gc/sec`
 ##   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;
-## 1 lm         417.53µs 450.52µs     2161.    5.36KB     12.5
-## 2 .lm.fit      2.65µs   3.08µs   292855.    3.99KB      0</code></pre>
+## 1 lm         535.85µs 616.72µs     1546.    5.36KB     13.9
+## 2 .lm.fit      2.74µs   3.54µs   260781.    3.99KB      0</code></pre>
 </div>
 <div id="using-for-creating-sequences" class="section level2">
 <h2>using : for creating sequences</h2>
@@ -729,10 +729,10 @@ div.tocify {
 <pre><code>## # A tibble: 4 x 6
 ##   expression      min   median `itr/sec` mem_alloc `gc/sec`
 ##   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;
-## 1 seq          3.63µs   4.42µs   225948.        0B     22.6
-## 2 seq.int       222ns    289ns  3254642.        0B      0  
-## 3 :             108ns    124ns  6954630.        0B      0  
-## 4 seq_len        94ns    107ns  7660359.        0B      0</code></pre>
+## 1 seq          3.86µs   5.72µs   156455.        0B     15.6
+## 2 seq.int       308ns    417ns  2304088.        0B      0  
+## 3 :             152ns    207ns  4498116.        0B      0  
+## 4 seq_len       125ns    178ns  4898761.        0B      0</code></pre>
 <p>Not only is <code>seq_len()</code> faster, but it is also safer as it works well when <code>n = 0</code>.</p>
 <div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1"></a><span class="dv">1</span><span class="op">:</span><span class="dv">0</span></span></code></pre></div>
 <pre><code>## [1] 1 0</code></pre>

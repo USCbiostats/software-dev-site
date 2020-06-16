@@ -433,28 +433,28 @@ div.tocify {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="handbook-00-introduction.html">Introduction</a>
+      <a href="handbook-introduction.html">Introduction</a>
     </li>
     <li>
-      <a href="handbook-01-standards.html">1: Standards</a>
+      <a href="handbook-standards.html">1: Standards</a>
     </li>
     <li>
-      <a href="handbook-02-r_package.html">2: R packages</a>
+      <a href="handbook-hpc.html">2: High Performance Computing</a>
     </li>
     <li>
-      <a href="handbook-03-parallel.html">3: Parallel</a>
+      <a href="handbook-parallel.html">3: parallel computing</a>
     </li>
     <li>
-      <a href="handbook-04-testing.html">4: Testing</a>
+      <a href="handbook-profiling.html">4: Profiling</a>
     </li>
     <li>
-      <a href="handbook-05-profiling.html">5: Profiling</a>
+      <a href="handbook-slow-patterns.html">5: Slow R patterns</a>
     </li>
     <li>
-      <a href="handbook-06-hpc.html">6: High Performance Computing</a>
+      <a href="handbook-r_package.html">6: R packages</a>
     </li>
     <li>
-      <a href="handbook-07-slow-patterns.html">7: Slow R patterns</a>
+      <a href="handbook-testing.html">7: Testing</a>
     </li>
   </ul>
 </li>
@@ -653,13 +653,13 @@ div.tocify {
 <span id="cb19-2"><a href="#cb19-2"></a></span>
 <span id="cb19-3"><a href="#cb19-3"></a><span class="kw">future_lapply</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="dt">FUN =</span> pisim)</span></code></pre></div>
 <pre><code>## [[1]]
-## [1] 4
+## [1] 0
 ## 
 ## [[2]]
-## [1] 2
+## [1] 4
 ## 
 ## [[3]]
-## [1] 4
+## [1] 2.666667
 ## 
 ## [[4]]
 ## [1] 3
@@ -667,7 +667,7 @@ div.tocify {
 ## [[5]]
 ## [1] 3.2</code></pre>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a><span class="kw">future_vapply</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="dt">FUN =</span> pisim, <span class="dt">FUN.VALUE =</span> <span class="kw">numeric</span>(<span class="dv">1</span>))</span></code></pre></div>
-<pre><code>## [1] 4.0 4.0 4.0 2.0 2.4</code></pre>
+<pre><code>## [1] 4.000000 4.000000 2.666667 4.000000 2.400000</code></pre>
 </div>
 <div id="the-furrr-package" class="section level3">
 <h3>The furrr package</h3>
@@ -678,7 +678,7 @@ div.tocify {
 <span id="cb23-3"><a href="#cb23-3"></a></span>
 <span id="cb23-4"><a href="#cb23-4"></a><span class="kw">future_map</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, pisim)</span></code></pre></div>
 <pre><code>## [[1]]
-## [1] 4
+## [1] 0
 ## 
 ## [[2]]
 ## [1] 4
@@ -690,19 +690,19 @@ div.tocify {
 ## [1] 4
 ## 
 ## [[5]]
-## [1] 2.4</code></pre>
+## [1] 3.2</code></pre>
 <div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a><span class="kw">future_map</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="op">~</span><span class="st"> </span><span class="kw">pisim</span>(.x))</span></code></pre></div>
 <pre><code>## [[1]]
-## [1] 0
+## [1] 4
 ## 
 ## [[2]]
 ## [1] 2
 ## 
 ## [[3]]
-## [1] 2.666667
+## [1] 4
 ## 
 ## [[4]]
-## [1] 3
+## [1] 4
 ## 
 ## [[5]]
 ## [1] 3.2</code></pre>

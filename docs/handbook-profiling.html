@@ -357,28 +357,28 @@ $(document).ready(function () {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="handbook-00-introduction.html">Introduction</a>
+      <a href="handbook-introduction.html">Introduction</a>
     </li>
     <li>
-      <a href="handbook-01-standards.html">1: Standards</a>
+      <a href="handbook-standards.html">1: Standards</a>
     </li>
     <li>
-      <a href="handbook-02-r_package.html">2: R packages</a>
+      <a href="handbook-hpc.html">2: High Performance Computing</a>
     </li>
     <li>
-      <a href="handbook-03-parallel.html">3: Parallel</a>
+      <a href="handbook-parallel.html">3: parallel computing</a>
     </li>
     <li>
-      <a href="handbook-04-testing.html">4: Testing</a>
+      <a href="handbook-profiling.html">4: Profiling</a>
     </li>
     <li>
-      <a href="handbook-05-profiling.html">5: Profiling</a>
+      <a href="handbook-slow-patterns.html">5: Slow R patterns</a>
     </li>
     <li>
-      <a href="handbook-06-hpc.html">6: High Performance Computing</a>
+      <a href="handbook-r_package.html">6: R packages</a>
     </li>
     <li>
-      <a href="handbook-07-slow-patterns.html">7: Slow R patterns</a>
+      <a href="handbook-testing.html">7: Testing</a>
     </li>
   </ul>
 </li>
@@ -501,14 +501,14 @@ profvis data view showcases results by expresion in stead of by line.
 <span id="cb6-2"><a href="#cb6-2"></a>  <span class="kw">fibonacci</span>(<span class="dv">32</span>)</span>
 <span id="cb6-3"><a href="#cb6-3"></a>  })</span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##   2.329   0.008   2.338</code></pre>
+##   3.228   0.027   3.297</code></pre>
 <p>The first two numbers are the are the total user and system CPU times of the current R process and any child processes on which it has waited, and the third entry is the ‘real’ elapsed time since the process was started. An alternative with the same functionality from the <a href="http://bench.r-lib.org">bench</a> package is the function <code>system_time()</code>.</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="kw">library</span>(bench)</span>
 <span id="cb8-2"><a href="#cb8-2"></a><span class="kw">system_time</span>({</span>
 <span id="cb8-3"><a href="#cb8-3"></a>  <span class="kw">fibonacci</span>(<span class="dv">32</span>)</span>
 <span id="cb8-4"><a href="#cb8-4"></a>  })</span></code></pre></div>
 <pre><code>## process    real 
-##   2.31s   2.31s</code></pre>
+##    2.9s   2.94s</code></pre>
 <p>where the two values are</p>
 <ul>
 <li>process - The process CPU usage of the expression evaluation.</li>
@@ -519,7 +519,7 @@ profvis data view showcases results by expresion in stead of by line.
 <span id="cb10-2"><a href="#cb10-2"></a><span class="kw">tic</span>()</span>
 <span id="cb10-3"><a href="#cb10-3"></a>x &lt;-<span class="st"> </span><span class="kw">fibonacci</span>(<span class="dv">32</span>)</span>
 <span id="cb10-4"><a href="#cb10-4"></a><span class="kw">toc</span>()</span></code></pre></div>
-<pre><code>## 2.784 sec elapsed</code></pre>
+<pre><code>## 2.567 sec elapsed</code></pre>
 <p>In addition does this package extend the timing functionality in such a way that we are able to measure times in nested context. In the following example we are generating some data and fitting a model. Calling <code>tic()</code> another time before the <code>toc()</code> allows us to measure subsections of the whole.</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="kw">library</span>(tictoc)</span>
 <span id="cb12-2"><a href="#cb12-2"></a><span class="kw">tic</span>(<span class="st">&quot;Total&quot;</span>)</span>
@@ -533,9 +533,9 @@ profvis data view showcases results by expresion in stead of by line.
 <span id="cb12-10"><a href="#cb12-10"></a> model &lt;-<span class="st"> </span><span class="kw">lm</span>(y <span class="op">~</span><span class="st"> </span>X)</span>
 <span id="cb12-11"><a href="#cb12-11"></a> <span class="kw">toc</span>()</span>
 <span id="cb12-12"><a href="#cb12-12"></a><span class="kw">toc</span>()</span></code></pre></div>
-<pre><code>## Data Generation: 0.409 sec elapsed
-## Model Fitting: 4.095 sec elapsed
-## Total: 4.507 sec elapsed</code></pre>
+<pre><code>## Data Generation: 0.478 sec elapsed
+## Model Fitting: 4.333 sec elapsed
+## Total: 4.813 sec elapsed</code></pre>
 <p>This can be useful if you want to be able to time the overall script as well as parts of it. Notice how each timing is named.</p>
 </div>
 <div id="fast-code---microbenchmarking" class="section level3">
@@ -551,8 +551,8 @@ profvis data view showcases results by expresion in stead of by line.
 <pre><code>## # A tibble: 2 x 6
 ##   expression      min   median `itr/sec` mem_alloc `gc/sec`
 ##   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;
-## 1 var(x)        8.3µs   10.4µs    91956.    13.7KB     18.4
-## 2 cov(x, x)    17.3µs     19µs    49383.    47.5KB     19.8</code></pre>
+## 1 var(x)       8.46µs   10.6µs    93916.    13.7KB     18.8
+## 2 cov(x, x)   17.49µs   20.4µs    48377.    47.5KB     19.4</code></pre>
 <p><code>mark()</code> also checks that all the expressions return the same output as a sanity check. Notice the units</p>
 <ul>
 <li>1 ms, then one thousand calls takes a second.</li>
