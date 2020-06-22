@@ -20,6 +20,7 @@
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
 
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -519,7 +520,7 @@ profvis data view showcases results by expresion in stead of by line.
 <span id="cb10-2"><a href="#cb10-2"></a><span class="kw">tic</span>()</span>
 <span id="cb10-3"><a href="#cb10-3"></a>x &lt;-<span class="st"> </span><span class="kw">fibonacci</span>(<span class="dv">32</span>)</span>
 <span id="cb10-4"><a href="#cb10-4"></a><span class="kw">toc</span>()</span></code></pre></div>
-<pre><code>## 2.567 sec elapsed</code></pre>
+<pre><code>## 3.252 sec elapsed</code></pre>
 <p>In addition does this package extend the timing functionality in such a way that we are able to measure times in nested context. In the following example we are generating some data and fitting a model. Calling <code>tic()</code> another time before the <code>toc()</code> allows us to measure subsections of the whole.</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="kw">library</span>(tictoc)</span>
 <span id="cb12-2"><a href="#cb12-2"></a><span class="kw">tic</span>(<span class="st">&quot;Total&quot;</span>)</span>
@@ -551,8 +552,8 @@ profvis data view showcases results by expresion in stead of by line.
 <pre><code>## # A tibble: 2 x 6
 ##   expression      min   median `itr/sec` mem_alloc `gc/sec`
 ##   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;
-## 1 var(x)       8.46µs   10.6µs    93916.    13.7KB     18.8
-## 2 cov(x, x)   17.49µs   20.4µs    48377.    47.5KB     19.4</code></pre>
+## 1 var(x)       10.4µs   12.6µs    72857.    13.7KB     21.9
+## 2 cov(x, x)      20µs     25µs    37504.    47.5KB     15.0</code></pre>
 <p><code>mark()</code> also checks that all the expressions return the same output as a sanity check. Notice the units</p>
 <ul>
 <li>1 ms, then one thousand calls takes a second.</li>
