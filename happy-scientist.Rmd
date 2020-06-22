@@ -1,0 +1,23 @@
+---
+output:
+  html_document:
+    theme: flatly
+    highlight: tango
+    toc: true
+    toc_float: true
+---
+
+# Introduction
+
+This page contains information and slides for many of the Happy Scientist seminar conducted in the department.
+
+# 2020
+
+# Git & Github - What is it and why should I use it?
+
+Time: 12:00pm-1:00pm, Thursday January 23nd 2020  
+
+the vast majority of this talk is based on the paper [Excuse me, do you have a moment to talk about version control?](https://peerj.com/preprints/3159v2/) and accompanied resources are
+[HappyGitWithR.com](https://happygitwithr.com/) and [gitexplorer.com](https://gitexplorer.com/).
+
+Slides can be found [here](happy-scientist-material/2020-git-and-github/slides.pdf)

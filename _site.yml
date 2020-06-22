@@ -23,5 +23,7 @@ navbar:
           href: handbook-r_package.html
         - text: "7: Testing"
           href: handbook-testing.html
+    - text: "Happy Scientist"
+      href: happy-scientist.html
     - text: "Bioghost Server"
       href: bioghost-server.html
