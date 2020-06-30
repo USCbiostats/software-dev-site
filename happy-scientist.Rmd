@@ -15,9 +15,227 @@ This page contains information and slides for many of the Happy Scientist semina
 
 # Git & Github - What is it and why should I use it?
 
-Time: 12:00pm-1:00pm, Thursday January 23nd 2020  
-
-the vast majority of this talk is based on the paper [Excuse me, do you have a moment to talk about version control?](https://peerj.com/preprints/3159v2/) and accompanied resources are
+**Abstract**: The vast majority of this talk is based on the paper [Excuse me, do you have a moment to talk about version control?](https://peerj.com/preprints/3159v2/) and accompanied resources are
 [HappyGitWithR.com](https://happygitwithr.com/) and [gitexplorer.com](https://gitexplorer.com/).
 
+**Date**: January 23rd 2020  
+
+**Speaker**: [Emil Hvitfeldt](https://www.hvitfeldt.me/)
+
 Slides can be found [here](happy-scientist-material/2020-git-and-github/slides.pdf)
+
+# Research Pipelines
+
+**Abstract** On this edition of the “Happy Scientist”, we will discuss about practices and tools that you may, and probably should, include in your research pipeline. The presentation will be mostly focused on summarizing and showing resources for the modern researcher, most of which have been developed in-house by our division.
+
+**Date**: October 24th, 2019
+
+**Speaker**: [George G. Vega Yon](https://ggvy.cl)
+
+The slides can be view directly [here](https://rawcdn.githack.com/USCbiostats/software-dev/master/happy_scientist/seminars/2019-06_research-pipelines/index.html)
+
+# How R Markdown helped me thrive in scientific research 📚 and advance my career development 👔
+
+**Abstract** Description: R has made it easy for us to wrangle data and build models. With the power of the R Markdown family packages, your analysis can be easily turned into high-quality reproducible documents including reports, presentations, posters, webpages, dashboards, scientific articles, websites and more. We will look at a couple of real-life case studies in which R Markdown helps a graduate student navigate scientific research and career development.
+
+**Date**: October 17th, 2019
+
+**Speaker**: [Zhi Yang](https://zhiyang.netlify.com/) Twitter: [zhiiiyang](https://twitter.com/zhiiiyang)
+
+The slides can be view directly [here](https://uscbiostats-rmarkdown.netlify.com/#1)
+
+The demos can be accessed [here](https://rstudio.cloud/project/623430)
+
+# HPC with Slurm, R and the slurmR package Contents
+
+**Abstract** The Slurm job-scheduler (currently used by USC) provides a flexible infrastructure for all your computing needs. From submitting a single-core-long-running-job to complex multi-node-tasks, Slurm covers all scientists' needs in terms of computational resources management. The R programming language, although not HPC-ready, has multiple community-based solutions to integrate your computational pipeline with HPC settings, including Slurm. In this workshop, we will illustrate how to use R with USC's HPC cluster, covering from the very basics, like submitting a simple R script, to the more complex-powerful settings, like using multinode socket clusters using dozens or hundreds of cores in the same R session. The workshop will be led by USC's Division of Biostatistics at the Keck School of Medicine.
+
+**Speaker** [George G. Vega Yon](https://ggvy.cl)
+
+Slides can be viewed [here](https://rawcdn.githack.com/USCbiostats/software-dev/master/happy_scientist/seminars/2019-04_slurmr-workshop/docs/index.html)
+
+# Building an R package
+
+**Abstract**: Building a R package can seem daunting with its many files and structure. This seminar will go through the different use cases for a R package, dos and don’ts and best practices. Finally a live demonstration starting with the creation of a R package ending with release on CRAN.
+
+**Date**: March 28th 2019
+
+**Speaker**: [Emil Hvitfeldt](https://www.hvitfeldt.me/)
+
+Slides can be found [here](happy-scientist-material/2019-r-package/slides.pdf)
+
+<details>
+  <summary>Additional resources</summary>
+Usethis package  
+https://github.com/r-lib/usethis  
+
+Writing a R package slides  
+https://github.com/jalapic/RPackage/blob/master/Writing%20an%20R%20Package.pdf  
+
+Cran documentation  
+https://cran.r-project.org/doc/manuals/R-exts.html   
+
+Pick a license  
+https://blog.codinghorror.com/pick-a-license-any-license/  
+https://choosealicense.com/licenses/  
+https://tldrlegal.com/  
+https://cran.r-project.org/doc/manuals/R-exts.html#The-DESCRIPTION-file  
+
+Build a Basic Package  
+http://rpubs.com/jennybc/build-a-basic-package  
+
+Deployment options  
+https://twitter.com/WeAreRLadies/status/1110694338068140032  
+
+R Packages  
+https://r-pkgs.org/  
+
+https://www.hvitfeldt.me/blog/usethis-workflow-for-package-development/  
+
+https://usethis.r-lib.org/  
+
+You can make a package in 20 minutes - Rstudio Conf Talk by Jim Hester  
+https://www.rstudio.com/resources/videos/you-can-make-a-package-in-20-minutes/  
+
+https://hilaryparker.com/2014/04/29/writing-an-r-package-from-scratch/  
+
+https://cran.r-project.org/doc/manuals/r-release/R-exts.html  
+
+https://ropensci.github.io/dev_guide/ 
+</details>
+
+# Debugging and Profiling in R
+
+**Abstract**:  Hitting an error or a speed-bump while working in R can be a frustration. This seminar will cover strategies and techniques for performing debugging and code profiling in R. We will look at some different ways to identify bugs, how to fix them and how to prevent them from coming back again. We will also look at a couple of typical patterns seen in slow code and at what can be done to fix it.
+
+**Date**: February 19th 2019
+
+**Speaker**: [Emil Hvitfeldt](https://www.hvitfeldt.me/)
+
+Slides can be found [here](happy-scientist-material/2019-debugging/slides.pdf)
+
+<details>
+  <summary>Additional resources</summary>
+https://adv-r.hadley.nz/debugging.html
+
+https://support.rstudio.com/hc/en-us/articles/205612627-Debugging-with-RStudio
+
+https://CRAN.R-project.org/package=tictoc
+
+https://CRAN.R-project.org/package=bench
+</details>
+
+# Rstudio and R Resources
+
+**Abstract**:  Getting started working with R can be an overwhelming task with the vast amount of information available. This presentation will cover a wide array of things you can do in R and RStudio as well as where to find complementary information. We will go over how RStudio can enhance your workflow experience, using R Markdown to generate documents, shiny for interactive web applications and how we can extend to work with other programs/facilities for even greater applications.
+
+**Date**: January 22th 2019
+
+**Speaker**: [Emil Hvitfeldt](https://www.hvitfeldt.me/)
+
+Slides can be found [here](happy-scientist-material/2019-rstudio/slides.pdf)
+
+<details>
+  <summary>Additional resources</summary>
+Rstudio
+
+**RStudio IDE**  
+<https://www.rstudio.com/products/RStudio/>
+
+**RStudio features**  
+<https://www.rstudio.com/products/rstudio/features/>
+
+Packages
+
+**CRAN homepage**  
+<https://cran.r-project.org/>
+
+**Available CRAN Packages By Name**  
+<https://cran.r-project.org/web/packages/available_packages_by_name.html>
+
+**CRAN Task Views**  
+<https://cran.r-project.org/web/views/>
+
+**Bioconducter homepage**  
+<https://www.bioconductor.org/>
+
+**Bioconducter packages**  
+<https://www.bioconductor.org/packages/release/BiocViews.html#___Software>
+
+R Markdown
+
+**Rmarkdown**  
+<https://rmarkdown.rstudio.com/>
+
+**Bookdown**  
+<https://bookdown.org/>
+
+**R Markdown: The Definitive Guide**  
+<https://bookdown.org/yihui/rmarkdown/>
+
+**Convince me to start using R Markdown**  
+<https://community.rstudio.com/t/convince-me-to-start-using-r-markdown/1636>
+
+**xaringan**  
+<https://github.com/yihui/xaringan>
+
+**flexdashboard**  
+<https://rmarkdown.rstudio.com/flexdashboard/>
+
+**leanr**  
+<https://rstudio.github.io/learnr/>
+
+**rticles**  
+<https://github.com/rstudio/rticles>
+
+**Example of parametised rmarkdown**  
+<https://github.com/jimhester/cran_usage>
+
+Shiny
+
+**Shiny**  
+<http://shiny.rstudio.com/>
+
+**The basic parts of a Shiny app**  
+<https://shiny.rstudio.com/articles/basics.html>
+
+**Shiny gallary**  
+<https://shiny.rstudio.com/gallery/>
+
+## Miscellaneous
+
+**RStudio Cheat Sheets**  
+<https://www.rstudio.com/resources/cheatsheets/>
+
+Books
+
+**Bookdown website**  
+<https://bookdown.org/>
+
+**R packages**  
+<http://r-pkgs.had.co.nz/>
+
+**R for Data Science**  
+<http://r4ds.had.co.nz/>
+
+**Advanced R**  
+<https://adv-r.hadley.nz/>
+
+**Blogdown**  
+<https://bookdown.org/yihui/blogdown/>
+
+**Mastering Software Development in R**  
+<https://bookdown.org/rdpeng/RProgDA/>
+
+**Data Visualization for Social Science**  
+<http://socviz.co/>
+
+**Fundamentals of Data Visualization**  
+<http://serialmentor.com/dataviz/>
+
+**Happy Git with R**  
+<https://happygitwithr.com/>
+
+**Git For Ages 4 And Up**  
+<https://www.youtube.com/watch?v=1ffBJ4sVUb4>
+</details>
