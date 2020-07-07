@@ -24,6 +24,8 @@ This page contains information and slides for many of the Happy Scientist semina
 
 Slides can be found [here](happy-scientist-material/2020-git-and-github/slides.pdf)
 
+# 2019
+
 # Research Pipelines
 
 **Abstract** On this edition of the “Happy Scientist”, we will discuss about practices and tools that you may, and probably should, include in your research pipeline. The presentation will be mostly focused on summarizing and showing resources for the modern researcher, most of which have been developed in-house by our division.

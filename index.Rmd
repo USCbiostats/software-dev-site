@@ -5,3 +5,15 @@ output:
     theme: flatly
     highlight: tango
 ---
+
+This site serves as a continuation of the [software-dev](https://github.com/USCbiostats/software-dev) repository we have used to keep information that would be useful within this department.
+
+This site will try to keep a collection of knowledge about computing, standards, and research practices in a central place.
+
+We have a [handbook](handbook-introduction.html) with short chapters detailing things you should know about coding in R, this includes profiling, building packages, parallel computing, and high performance computing.
+
+Many happy scientist seminar have been given over the years. Slides and additional information can be found in the [happy scientist](happy-scientist.html) tab in case you need a refresher on a previous seminar.
+
+The bioghost setup specification can be found [here](bioghost-server.html).
+
+If you find a bug or have a question/suggestion please go the [github repository](https://github.com/USCbiostats/software-dev-site) and file an issue.
